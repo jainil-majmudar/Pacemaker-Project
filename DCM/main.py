@@ -62,7 +62,7 @@ class SimpleLoginApp(tk.Tk):
 
         # Create a menu bar
         menubar = tk.Menu(self)
-        self.config(menu=menubar)
+        self.config(menu=menubar) 
 
         file_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="File", menu=file_menu)

@@ -81,7 +81,7 @@ class SimpleLoginApp(tk.Tk):
 
     def login(self):
         username = self.username_entry.get()
-        password = self.password_entry.get()
+        password = self.password_entry.get() #This is the password variable
 
         if username in users and users[username] == password:
             messagebox.showinfo("Login Successful", "Welcome, " + username + "!")

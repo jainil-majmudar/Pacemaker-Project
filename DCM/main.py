@@ -8,11 +8,14 @@ class SimpleLoginApp(tk.Tk):
         super().__init__()
 
         self.title("Pacemaker Interface")
-        self.geometry("600x600")
+        self.geometry("1100x600")
 
         # Create labels
-        self.welcome_label = tk.Label(self, text="Welcome!", font=("Times New Roman", 50), fg='#f00')
+        self.welcome_label = tk.Label(self, text="Welcome!", font=("Inter 1000", 50, "bold"), fg='#00f')
         self.welcome_label.pack(pady=50)
+
+        # Creating grid
+        self.grid()
 
 
 

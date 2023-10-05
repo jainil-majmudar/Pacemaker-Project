@@ -11,8 +11,8 @@ class SimpleLoginApp(tk.Tk):
         self.geometry("600x600")
 
         # Create labels
-        self.welcome_label = tk.Label(self, text="Welcome!", font=("Arial", 14))
-        self.welcome_label.pack(pady=10)
+        self.welcome_label = tk.Label(self, text="Welcome!", font=("Times New Roman", 50), fg='#f00')
+        self.welcome_label.pack(pady=50)
 
 
 

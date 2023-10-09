@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
 from PIL import ImageTk, Image
-
+import json
 
 
 class SimpleLoginApp(tk.Tk):
@@ -66,6 +66,8 @@ class SimpleLoginApp(tk.Tk):
         self.register_button = tk.Button(self.register_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.register)
         self.register_button.place(x=115, y=460)
 
+        self.load_user_data()
+
         self.register_frame.pack_forget()
 
         #-------------Interface-------------------
@@ -73,6 +75,15 @@ class SimpleLoginApp(tk.Tk):
 
 
     def login(self):
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+
+        for user_data in self.users:
+            if username == user_data["username"] and password == user_data["password"]:
+                messagebox.showinfo("Login", "Login successful!")
+                return
+        messagebox.showerror("Login Error", "Invalid username or password.")
+
         self.login_frame.pack_forget()
         self.register_frame.pack_forget()
         self.right_frame.pack_forget()
@@ -85,9 +96,34 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame.pack()
 
     def register(self):
+        if len(self.users) < 10:
+            username = self.username_entry.get()
+            password = self.password_entry.get()
+
+            if username and password:
+                self.users.append({"username": username, "password": password})
+                messagebox.showinfo("Registration", "User registered successfully!")
+                # Save updated user data to a file
+                self.save_user_data()
+            else:
+                messagebox.showerror("Registration Error", "Username and password are required.")
+        else:
+            messagebox.showerror("Registration Error", "Maximum 10 users reached.")
+
         self.register_frame.pack_forget()
         self.interface.pack_forget()
         self.login_frame.pack()
+
+    def load_user_data(self):
+        try:
+            with open("DCM/user_data.json", "r") as file:
+                self.users = json.load(file)
+        except FileNotFoundError:
+            self.users = []
+
+    def save_user_data(self):
+        with open("DCM/user_data.json", "w") as file:
+            json.dump(self.users, file)
         
         
 

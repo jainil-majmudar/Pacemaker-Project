@@ -71,11 +71,15 @@ class SimpleLoginApp(tk.Tk):
         self.register_button.place(x=115, y=460)
         self.back_button = tk.Button(self.register_frame, width='16', border = 2, text = "Return Home", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.return_home)
         self.back_button.place(x=115, y=520)
+        
+        #----Interface Frame------
+        self.back_button = tk.Button(self.interface, width='16', border = 2, text = "Return Home", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.return_home)
+        self.back_button.place(x=115, y=520)
+       
+
+        #Following Code Only Shows Login Frame and Lets Login Button Access User Data
         self.load_user_data()
-
         self.register_frame.pack_forget()
-
-        #-------------Interface-------------------
         self.interface.pack_forget()
 
 
@@ -102,9 +106,14 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame.pack()
     
     def return_home(self):
-         self.register_frame.pack_forget()
          self.interface.pack_forget()
-         self.login_frame.pack()
+         self.register_frame.pack_forget()
+         self.right_frame.pack(side='right', fill='both', expand=True)
+         self.login_frame.pack(side='right', fill='both', expand=True)
+         self.left_frame.pack(side='left', fill='both', expand=True)
+         
+       
+       
 
     def register(self):
         if len(self.users) < 10:

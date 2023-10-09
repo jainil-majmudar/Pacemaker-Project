@@ -81,14 +81,15 @@ class SimpleLoginApp(tk.Tk):
         for user_data in self.users:
             if username == user_data["username"] and password == user_data["password"]:
                 messagebox.showinfo("Login", "Login successful!")
+                self.login_frame.pack_forget()
+                self.register_frame.pack_forget()
+                self.right_frame.pack_forget()
+                self.left_frame.pack_forget()
+                self.interface.pack()
                 return
         messagebox.showerror("Login Error", "Invalid username or password.")
 
-        self.login_frame.pack_forget()
-        self.register_frame.pack_forget()
-        self.right_frame.pack_forget()
-        self.left_frame.pack_forget()
-        self.interface.pack()
+
 
     def new_user(self):
         self.login_frame.pack_forget()
@@ -97,8 +98,8 @@ class SimpleLoginApp(tk.Tk):
 
     def register(self):
         if len(self.users) < 10:
-            username = self.username_entry.get()
-            password = self.password_entry.get()
+            username = self.register_username_entry.get()
+            password = self.register_password_entry.get()
 
             if username and password:
                 self.users.append({"username": username, "password": password})
@@ -117,9 +118,14 @@ class SimpleLoginApp(tk.Tk):
     def load_user_data(self):
         try:
             with open("DCM/user_data.json", "r") as file:
-                self.users = json.load(file)
+                file_content = file.read()
+                if not file_content:  # Check if the file is empty
+                    self.users = []  # Set an empty list as a default value
+                else:
+                    self.users = json.load(file_content)
         except FileNotFoundError:
             self.users = []
+
 
     def save_user_data(self):
         with open("DCM/user_data.json", "w") as file:

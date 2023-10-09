@@ -27,10 +27,14 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame.pack(side='left', fill='both', expand=True)
         
 
-        # Insert images
-        # img=ImageTk.PhotoImage(Image.open("McMaster_logo.png"))
-        # image=tk.Label(self.left_frame, image=img,bg=bgColor)
+        # Load and resize the image
+        image = Image.open("DCM/Images/McMaster_logo.png")
+        image = image.resize((200, 100))  # Adjust the dimensions as needed
+        self.logo_image = ImageTk.PhotoImage(image)
 
+        # Create a Label to display the image
+        self.logo_label = tk.Label(self.left_frame, image=self.logo_image, bg=bgColor)
+        self.logo_label.pack(side='top', padx=25, pady=10)
         # Create Labels
         #----------- Login Frame---------
         self.heading_label = tk.Label(self.login_frame, text="Pacemaker \nDCM", font=("Inter", 50, "bold"), fg='#00f', bg=bgColor)
@@ -118,11 +122,7 @@ class SimpleLoginApp(tk.Tk):
     def load_user_data(self):
         try:
             with open("DCM/user_data.json", "r") as file:
-                file_content = file.read()
-                if not file_content:  # Check if the file is empty
-                    self.users = []  # Set an empty list as a default value
-                else:
-                    self.users = json.load(file_content)
+                    self.users = json.load(file)
         except FileNotFoundError:
             self.users = []
 

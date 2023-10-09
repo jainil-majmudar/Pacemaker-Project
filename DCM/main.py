@@ -104,6 +104,16 @@ class SimpleLoginApp(tk.Tk):
         if len(self.users) < 10:
             username = self.register_username_entry.get()
             password = self.register_password_entry.get()
+            
+            for user_data in self.users:
+                if username==user_data['username']:
+                    messagebox.showerror("Registration Error", "This username is already in use")
+                    return
+                else:
+                    continue
+                    
+
+
 
             if username and password:
                 self.users.append({"username": username, "password": password})

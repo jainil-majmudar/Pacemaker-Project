@@ -69,7 +69,8 @@ class SimpleLoginApp(tk.Tk):
         self.confirm_password_entry.place(x=115, y=400)
         self.register_button = tk.Button(self.register_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.register)
         self.register_button.place(x=115, y=460)
-
+        self.back_button = tk.Button(self.register_frame, width='16', border = 2, text = "Return Home", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.return_home)
+        self.back_button.place(x=115, y=520)
         self.load_user_data()
 
         self.register_frame.pack_forget()
@@ -99,6 +100,11 @@ class SimpleLoginApp(tk.Tk):
         self.login_frame.pack_forget()
         self.interface.pack_forget()
         self.register_frame.pack()
+    
+    def return_home(self):
+         self.register_frame.pack_forget()
+         self.interface.pack_forget()
+         self.login_frame.pack()
 
     def register(self):
         if len(self.users) < 10:
@@ -125,9 +131,6 @@ class SimpleLoginApp(tk.Tk):
         else:
             messagebox.showerror("Registration Error", "Maximum 10 users reached.")
 
-        self.register_frame.pack_forget()
-        self.interface.pack_forget()
-        self.login_frame.pack()
 
     def load_user_data(self):
         try:

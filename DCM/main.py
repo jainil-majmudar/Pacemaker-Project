@@ -45,7 +45,7 @@ class SimpleLoginApp(tk.Tk):
         self.username_entry.place(x=105, y=300)
         self.password_label = tk.Label(self.login_frame, text="Password", font=("Inter", 10,), fg='#000', bg=bgColor)
         self.password_label.place(x=10, y=350)
-        self.password_entry = tk.Entry(self.login_frame, width=46, fg='black', border=2, bg='white')
+        self.password_entry = tk.Entry(self.login_frame, show="*", width=46, fg='black', border=2, bg='white')
         self.password_entry.place(x=105, y=350)
         self.login_button = tk.Button(self.login_frame, width=16, border=2, text="Login", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.login)
         self.login_button.place(x=105, y=400)
@@ -63,9 +63,9 @@ class SimpleLoginApp(tk.Tk):
         self.register_password_label.place(x=0, y=350)
         self.register_password_label = tk.Label(self.register_frame, text="Confirm Password", font=("Inter", 10,), fg='#000', bg=bgColor)
         self.register_password_label.place(x=0, y=400)
-        self.register_password_entry = tk.Entry(self.register_frame, width=46, fg='black', border=2, bg='white')
+        self.register_password_entry = tk.Entry(self.register_frame, show="*", width=46, fg='black', border=2, bg='white')
         self.register_password_entry.place(x=115, y=350)
-        self.confirm_password_entry = tk.Entry(self.register_frame, width=46, fg='black', border=2, bg='white')
+        self.confirm_password_entry = tk.Entry(self.register_frame, show="*", width=46, fg='black', border=2, bg='white')
         self.confirm_password_entry.place(x=115, y=400)
         self.register_button = tk.Button(self.register_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.register)
         self.register_button.place(x=115, y=460)
@@ -119,6 +119,7 @@ class SimpleLoginApp(tk.Tk):
         if len(self.users) < 10:
             username = self.register_username_entry.get()
             password = self.register_password_entry.get()
+            confirm = self.confirm_password_entry.get()
             
             for user_data in self.users:
                 if username==user_data['username']:
@@ -131,8 +132,13 @@ class SimpleLoginApp(tk.Tk):
 
 
             if username and password:
-                self.users.append({"username": username, "password": password})
-                messagebox.showinfo("Registration", "User registered successfully!")
+                if(password == confirm):
+                    self.users.append({"username": username, "password": password})
+                    messagebox.showinfo("Registration", "User registered successfully!")
+                else:
+                    messagebox.showerror("Registration Error", "Passwords don't match!")
+                
+                
                 # Save updated user data to a file
                 self.save_user_data()
             else:

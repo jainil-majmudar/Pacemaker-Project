@@ -26,7 +26,6 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame = tk.Frame(self, width=400, height=600, bg=bgColor)
         self.register_frame.pack(side='right', fill='both', expand=True)
         
-
         # Load and resize the image
         image = Image.open("DCM/Images/McMaster_logo.png")
         image = image.resize((200, 100))  # Adjust the dimensions as needed
@@ -75,7 +74,10 @@ class SimpleLoginApp(tk.Tk):
         #----Interface Frame------
         self.back_button = tk.Button(self.interface, width='10', border = 2, text = "Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.return_home)
         self.back_button.place(x=1000, y=20)
-       
+        self.pacemaker_label = tk.Label(self.interface, text="Pacemaker To Be Connected To", font=("Inter", 10), fg='#000', bg=bgColor)
+        self.pacemaker_label.place(x=50, y=100)
+        self.pacemaker_entry = tk.Entry(self.interface, width=46, fg='black', border=2, bg='white')
+        self.pacemaker_entry.place(x=280, y=100)
 
         #Following Code Only Shows Login Frame and Lets Login Button Access User Data
         self.load_user_data()
@@ -97,10 +99,8 @@ class SimpleLoginApp(tk.Tk):
                 self.username_entry.delete(0, 'end')
                 self.password_entry.delete(0, 'end')
                 self.interface.pack()
-                
                 return
         messagebox.showerror("Login Error", "Invalid username or password.")
-
 
 
     def new_user(self):
@@ -110,6 +110,7 @@ class SimpleLoginApp(tk.Tk):
         self.password_entry.delete(0, 'end')
         self.register_frame.pack()
     
+
     def return_home(self):
          self.interface.pack_forget()
          self.register_frame.pack_forget()
@@ -119,9 +120,7 @@ class SimpleLoginApp(tk.Tk):
          self.right_frame.pack(side='right', fill='both', expand=True)
          self.login_frame.pack(side='right', fill='both', expand=True)
          self.left_frame.pack(side='left', fill='both', expand=True)
-         
-       
-       
+
 
     def register(self):
         if len(self.users) < 10:
@@ -135,9 +134,6 @@ class SimpleLoginApp(tk.Tk):
                     return
                 else:
                     continue
-                    
-
-
 
             if username and password:
                 if(password == confirm):
@@ -145,8 +141,6 @@ class SimpleLoginApp(tk.Tk):
                     messagebox.showinfo("Registration", "User registered successfully!")
                 else:
                     messagebox.showerror("Registration Error", "Passwords don't match!")
-                
-                
                 # Save updated user data to a file
                 self.save_user_data()
             else:
@@ -154,7 +148,7 @@ class SimpleLoginApp(tk.Tk):
         else:
             messagebox.showerror("Registration Error", "Maximum 10 users reached.")
 
-
+    
     def load_user_data(self):
         try:
             with open("DCM/user_data.json", "r") as file:
@@ -167,8 +161,8 @@ class SimpleLoginApp(tk.Tk):
         with open("DCM/user_data.json", "w") as file:
             json.dump(self.users, file)
         
-        
 
+        
 if __name__ == "__main__":
     app = SimpleLoginApp()
     app.mainloop()

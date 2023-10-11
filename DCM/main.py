@@ -98,7 +98,7 @@ class SimpleLoginApp(tk.Tk):
 
 if __name__ == "__main__":
     app = SimpleLoginApp()
-    user_manager = UserManager("DCM/user_data.json", app)
+    user_manager = UserManager("DCM/DataStorage/user_data.json", app)
     pacemaker_interface = PacemakerInterface(app.interface, app)
     app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.mainloop()

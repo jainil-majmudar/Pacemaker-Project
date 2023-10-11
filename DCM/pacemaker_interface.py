@@ -11,10 +11,10 @@ class PacemakerInterface:
         self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To")
         self.pacemaker_label.place(x=100,y=500)
         self.pacemaker_entry = tk.Entry(root, width=46)
-        self.pacemaker_entry.place(x=200,y=500)
+        self.pacemaker_entry.place(x=300,y=500)
         self.submit_button = tk.Button(root, text="Submit", command=self.submit)
-        self.submit_button.place(x=400,y=500)
-        self.back_button = tk.Button(root, width='10', border = 2, text = "Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.main.route(self.main.login_frame))
+        self.submit_button.place(x=600,y=500)
+        self.back_button = tk.Button(root, width='10', border = 2, text = "Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
         self.back_button.place(x=1000, y=20)
 
         # Place the widgets in the interface

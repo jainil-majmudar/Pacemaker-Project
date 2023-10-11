@@ -85,7 +85,8 @@ class SimpleLoginApp(tk.Tk):
     def register(self):
         username = self.register_username_entry.get()
         password = self.register_password_entry.get()
-        user_manager.register_user(username,password)
+        confirm = self.confirm_password_entry.get()
+        user_manager.register_user(username,password,confirm)
 
 
     def route(self, target_frame):

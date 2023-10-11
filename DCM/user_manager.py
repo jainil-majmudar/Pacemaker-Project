@@ -20,7 +20,7 @@ class UserManager:
         with open(self.user_data_file, "w") as file:
             json.dump(self.users, file)
 
-    def register_user(self, username, password):
+    def register_user(self, username, password, confirm):
         if len(self.users) >= 10:
             return messagebox.showerror("Registration Error", "Maximum 10 users reached.")
 
@@ -29,9 +29,12 @@ class UserManager:
                 return messagebox.showerror("Registration Error", "This username is already in use")
 
         if username and password:
-            self.users.append({"username": username, "password": password})
-            self.save_user_data()
-            return messagebox.showinfo("Registration", "User registered successfully!")
+            if(password == confirm):
+                self.users.append({"username": username, "password": password})
+                self.save_user_data()
+                return messagebox.showinfo("Registration", "User registered successfully!")
+            else:
+                return messagebox.showerror("Registration Error", "Passwords don't match!")
         else:
             return messagebox.showerror("Registration Error", "Username and password are required.")
 

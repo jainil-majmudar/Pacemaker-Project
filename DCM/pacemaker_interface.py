@@ -19,6 +19,8 @@ class PacemakerInterface:
         self.pacemaker_entry = tk.Entry(root, width=46)
         self.pacemaker_entry.place(x=300, y=100)
 
+        self.connection_label = tk.Label(root, text="Communication Established: " + "No")
+        self.connection_label.place(x=100,y=500)
         
         self.submit_button = tk.Button(root, text="Submit", command=lambda: self.submit(self.pacemaker_entry.get()))
         self.submit_button.place(x=600, y=100)

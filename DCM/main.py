@@ -1,8 +1,7 @@
 import tkinter as tk
-import tkinter.messagebox as messagebox
+from user_manager import UserManager
+from pacemaker_interface import PacemakerInterface
 from PIL import ImageTk, Image
-import json
-
 
 class SimpleLoginApp(tk.Tk):
     def __init__(self):
@@ -10,160 +9,92 @@ class SimpleLoginApp(tk.Tk):
 
         self.title("Pacemaker Interface")
         self.geometry('1100x600')
-        self.minsize(1100,600)
-        self.resizable(False,False)
+        self.minsize(1100, 600)
+        self.resizable(False, False)
 
         # Create Frames
         bgColor = '#AED2FF'
-        self.right_frame = tk.Frame(self, width=350, height=600, bg=bgColor)
-        self.right_frame.pack(side='right', fill='both', expand=True)
-        self.login_frame = tk.Frame(self, width=400, height=600, bg=bgColor)
+      
+        self.login_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
         self.login_frame.pack(side='right', fill='both', expand=True)
-        self.left_frame = tk.Frame(self, width=350, height=600, bg=bgColor)
-        self.left_frame.pack(side='left', fill='both', expand=True)
-        self.interface = tk.Frame(self,width=1100, height=600,bg='#F5E8B7')
-        self.interface.pack(side='left', fill='both', expand=True)
-        self.register_frame = tk.Frame(self, width=400, height=600, bg=bgColor)
+       
+        self.interface = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+        self.interface.pack(side='right', fill='both', expand=True)
+
+        self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
         self.register_frame.pack(side='right', fill='both', expand=True)
-        
+
         # Load and resize the image
         image = Image.open("DCM/Images/McMaster_logo.png")
         image = image.resize((200, 100))  # Adjust the dimensions as needed
         self.logo_image = ImageTk.PhotoImage(image)
 
         # Create a Label to display the image
-        self.logo_label = tk.Label(self.left_frame, image=self.logo_image, bg=bgColor)
+        self.logo_label = tk.Label(self.login_frame, image=self.logo_image, bg=bgColor)
         self.logo_label.place(x=25, y=10)
-        # Create Labels
-        #----------- Login Frame---------
+        self.logo_label2 = tk.Label(self.register_frame, image=self.logo_image, bg=bgColor)
+        self.logo_label2.place(x=25, y=10)
+
+        # Login Frame
         self.heading_label = tk.Label(self.login_frame, text="Pacemaker \nDCM", font=("Inter", 50, "bold"), fg='#00f', bg=bgColor)
-        self.heading_label.place(x=40, y=100)
+        self.heading_label.place(x=410, y=100)
         self.username_label = tk.Label(self.login_frame, text="Username", font=("Inter", 10), fg='#000', bg=bgColor)
-        self.username_label.place(x=10, y=300)
+        self.username_label.place(x=365, y=300)
         self.username_entry = tk.Entry(self.login_frame, width=46, fg='black', border=2, bg='white')
-        self.username_entry.place(x=115, y=300)
-        self.password_label = tk.Label(self.login_frame, text="Password", font=("Inter", 10,), fg='#000', bg=bgColor)
-        self.password_label.place(x=10, y=350)
+        self.username_entry.place(x=465, y=300)
+        self.password_label = tk.Label(self.login_frame, text="Password", font=("Inter", 10), fg='#000', bg=bgColor)
+        self.password_label.place(x=365, y=350)
         self.password_entry = tk.Entry(self.login_frame, show="*", width=46, fg='black', border=2, bg='white')
-        self.password_entry.place(x=115, y=350)
+        self.password_entry.place(x=465, y=350)
         self.login_button = tk.Button(self.login_frame, width=16, border=2, text="Login", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.login)
-        self.login_button.place(x=115, y=400)
-        self.register_button = tk.Button(self.login_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2',relief='ridge', command=self.new_user)
-        self.register_button.place(x=115, y=460)
+        self.login_button.place(x=465, y=400)
+        self.register_button = tk.Button(self.login_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2',relief='ridge', command=lambda: self.route(self.register_frame))
+        self.register_button.place(x=465, y=460)
 
-        #-------------Register Frame-----------------
+        # Register Frame
         self.heading_label = tk.Label(self.register_frame, text="Pacemaker \nDCM", font=("Inter", 50, "bold"), fg='#00f', bg=bgColor)
-        self.heading_label.place(x=40, y=100)
+        self.heading_label.place(x=410, y=100)
         self.register_username_label = tk.Label(self.register_frame, text="New Username", font=("Inter", 10), fg='#000', bg=bgColor)
-        self.register_username_label.place(x=0, y=300)
+        self.register_username_label.place(x=350, y=300)
         self.register_username_entry = tk.Entry(self.register_frame, width=46, fg='black', border=2, bg='white')
-        self.register_username_entry.place(x=115, y=300)
-        self.register_password_label = tk.Label(self.register_frame, text="Password", font=("Inter", 10,), fg='#000', bg=bgColor)
-        self.register_password_label.place(x=0, y=350)
-        self.register_password_label = tk.Label(self.register_frame, text="Confirm Password", font=("Inter", 10,), fg='#000', bg=bgColor)
-        self.register_password_label.place(x=0, y=400)
+        self.register_username_entry.place(x=465, y=300)
+        self.register_password_label = tk.Label(self.register_frame, text="Password", font=("Inter", 10), fg='#000', bg=bgColor)
+        self.register_password_label.place(x=350, y=350)
+        self.register_password_label = tk.Label(self.register_frame, text="Confirm Password", font=("Inter", 10), fg='#000', bg=bgColor)
+        self.register_password_label.place(x=350, y=400)
         self.register_password_entry = tk.Entry(self.register_frame, show="*", width=46, fg='black', border=2, bg='white')
-        self.register_password_entry.place(x=115, y=350)
+        self.register_password_entry.place(x=465, y=350)
         self.confirm_password_entry = tk.Entry(self.register_frame, show="*", width=46, fg='black', border=2, bg='white')
-        self.confirm_password_entry.place(x=115, y=400)
-        self.register_button = tk.Button(self.register_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.register)
-        self.register_button.place(x=115, y=460)
-        self.back_button = tk.Button(self.register_frame, width='16', border = 2, text = "Return Home", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.return_home)
-        self.back_button.place(x=115, y=520)
-        
-        #----Interface Frame------
-        self.back_button = tk.Button(self.interface, width='10', border = 2, text = "Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.return_home)
-        self.back_button.place(x=1000, y=20)
-        self.pacemaker_label = tk.Label(self.interface, text="Pacemaker To Be Connected To", font=("Inter", 10), fg='#000', bg=bgColor)
-        self.pacemaker_label.place(x=50, y=100)
-        self.pacemaker_entry = tk.Entry(self.interface, width=46, fg='black', border=2, bg='white')
-        self.pacemaker_entry.place(x=280, y=100)
-        self.submit_button = tk.Button(self.interface, width='10', text = "Submit", font=("Inter", 8, 'bold'), fg='white', bg='black', cursor='hand2')
-        self.submit_button.place(x=600,y=98)
-        #Following Code Only Shows Login Frame and Lets Login Button Access User Data
-        self.load_user_data()
-        self.register_frame.pack_forget()
-        self.interface.pack_forget()
+        self.confirm_password_entry.place(x=465, y=400)
+        self.register_button2 = tk.Button(self.register_frame, width=16, border=2, text="Register", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=self.register)
+        self.register_button2.place(x=465, y=460)
+        self.back_button = tk.Button(self.register_frame, width='16', border = 2, text = "Return Home", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=lambda: self.route(self.login_frame))
+        self.back_button.place(x=465, y=520)
 
- 
+        # Initialize user manager and pacemaker interface
+        self.pacemaker_interface = PacemakerInterface(self.interface)
+
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-
-        for user_data in self.users:
-            if username == user_data["username"] and password == user_data["password"]:
-                messagebox.showinfo("Login", "Login successful!")
-                self.login_frame.pack_forget()
-                self.register_frame.pack_forget()
-                self.right_frame.pack_forget()
-                self.left_frame.pack_forget()
-                self.username_entry.delete(0, 'end')
-                self.password_entry.delete(0, 'end')
-                self.interface.pack()
-                return
-        messagebox.showerror("Login Error", "Invalid username or password.")
-
-
-    def new_user(self):
-        self.login_frame.pack_forget()
-        self.interface.pack_forget()
-        self.username_entry.delete(0, 'end')
-        self.password_entry.delete(0, 'end')
-        self.register_frame.pack()
+        user_manager.login_user(username,password)
     
-
-    def return_home(self):
-         self.interface.pack_forget()
-         self.register_frame.pack_forget()
-         self.register_username_entry.delete(0, 'end')
-         self.register_password_entry.delete(0, 'end')
-         self.confirm_password_entry.delete(0, 'end')
-         self.right_frame.pack(side='right', fill='both', expand=True)
-         self.login_frame.pack(side='right', fill='both', expand=True)
-         self.left_frame.pack(side='left', fill='both', expand=True)
-
-
+    
     def register(self):
-        if len(self.users) < 10:
-            username = self.register_username_entry.get()
-            password = self.register_password_entry.get()
-            confirm = self.confirm_password_entry.get()
-            
-            for user_data in self.users:
-                if username==user_data['username']:
-                    messagebox.showerror("Registration Error", "This username is already in use")
-                    return
-                else:
-                    continue
-
-            if username and password:
-                if(password == confirm):
-                    self.users.append({"username": username, "password": password})
-                    messagebox.showinfo("Registration", "User registered successfully!")
-                else:
-                    messagebox.showerror("Registration Error", "Passwords don't match!")
-                # Save updated user data to a file
-                self.save_user_data()
-            else:
-                messagebox.showerror("Registration Error", "Username and password are required.")
-        else:
-            messagebox.showerror("Registration Error", "Maximum 10 users reached.")
-
-    
-    def load_user_data(self):
-        try:
-            with open("DCM/user_data.json", "r") as file:
-                    self.users = json.load(file)
-        except FileNotFoundError:
-            self.users = []
+        username = self.register_username_entry.get()
+        password = self.register_password_entry.get()
+        user_manager.register_user(username,password)
 
 
-    def save_user_data(self):
-        with open("DCM/user_data.json", "w") as file:
-            json.dump(self.users, file)
-        
+    def route(self, target_frame):
+        # Hide the current frame and show the target frame
+        self.login_frame.pack_forget()
+        self.register_frame.pack_forget()
+        self.interface.pack_forget()
+        target_frame.pack()
 
-        
 if __name__ == "__main__":
     app = SimpleLoginApp()
+    user_manager = UserManager("DCM/user_data.json", app)
+    app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.mainloop()

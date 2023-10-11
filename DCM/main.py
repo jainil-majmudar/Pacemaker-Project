@@ -9,8 +9,8 @@ class SimpleLoginApp(tk.Tk):
 
         self.title("Pacemaker Interface")
         self.geometry('1100x600')
-        self.minsize(1100, 600)
-        self.resizable(False, False)
+        self.minsize(500, 250)
+        self.resizable(False,False)
 
         # Create Frames
         bgColor = '#AED2FF'

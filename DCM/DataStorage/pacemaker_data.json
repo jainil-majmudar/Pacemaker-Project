@@ -1,1 +1,1 @@
-{"pacemaker": "2", "mode": "AOO", "upper_rate_limit": "2", "lower_rate_limit": "2"}
+{"pacemaker": "2", "mode": 0, "upper_rate_limit": 0, "lower_rate_limit": 0}

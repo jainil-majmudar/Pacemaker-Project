@@ -1,6 +1,7 @@
 import tkinter as tk
 from user_manager import UserManager
 from pacemaker_interface import PacemakerInterface
+from mode_sel import ModeSel
 from PIL import ImageTk, Image
 
 class SimpleLoginApp(tk.Tk):
@@ -18,13 +19,12 @@ class SimpleLoginApp(tk.Tk):
         self.login_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
         self.login_frame.pack(side='right', fill='both', expand=True)
        
-        self.interface = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
-        self.interface.pack(side='right', fill='both', expand=True)
+        self.pacemaker_sel = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
         
-
+        self.mode_sel = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
 
         self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
-        self.register_frame.pack(side='right', fill='both', expand=True)
+        
 
         # Load and resize the image
         image = Image.open("DCM/Images/McMaster_logo.png")
@@ -73,7 +73,6 @@ class SimpleLoginApp(tk.Tk):
         self.back_button = tk.Button(self.register_frame, width='16', border = 2, text = "Return Home", font=("Inter", 20, 'bold'), fg='white', bg='black', cursor='hand2', command=lambda: self.route(self.login_frame))
         self.back_button.place(x=465, y=520)
 
-        # Initialize user manager and pacemaker interface
         
 
     def login(self):
@@ -93,12 +92,14 @@ class SimpleLoginApp(tk.Tk):
         # Hide the current frame and show the target frame
         self.login_frame.pack_forget()
         self.register_frame.pack_forget()
-        self.interface.pack_forget()
+        self.pacemaker_sel.pack_forget()
+        self.mode_sel.pack_forget()
         target_frame.pack()
 
 if __name__ == "__main__":
     app = SimpleLoginApp()
     user_manager = UserManager("DCM/DataStorage/user_data.json", app)
-    pacemaker_interface = PacemakerInterface(app.interface, app)
+    pacemaker_interface = PacemakerInterface(app.pacemaker_sel, app)
+    mode_selection = ModeSel(app.mode_sel,app)
     app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.mainloop()

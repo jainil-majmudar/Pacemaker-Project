@@ -51,17 +51,20 @@ class PacemakerInterface:
             if(result == 'yes'):
                 self.prev_pacemaker = entry
                 self.previous_pacemaker_label.config(text="Previous Pacemaker Connected: " + entry)
+                messagebox.showinfo("Note!","Connected successfully")
+                self.main.route(self.main.mode_sel)
         else:
             messagebox.showinfo("Note!","Connected successfully")
+            self.main.route(self.main.mode_sel)
         
         # # Store the data in the pacemaker_data JSON
-        # self.pacemaker_data = {
-        #     "pacemaker": entry,
-        #     "mode": 0,
-        #     "upper_rate_limit": 0,
-        #     "lower_rate_limit": 0
-        # }
-        # self.save_pacemaker_data()
+        self.pacemaker_data = {
+            "pacemaker": entry,
+            "mode": 0,
+            "upper_rate_limit": 0,
+            "lower_rate_limit": 0
+        }
+        self.save_pacemaker_data()
 
-        # Handle pacemaker interface actions here, e.g., connecting to the pacemaker
+        
 

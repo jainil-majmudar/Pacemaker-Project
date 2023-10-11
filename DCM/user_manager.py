@@ -41,7 +41,7 @@ class UserManager:
     def login_user(self, username, password):
         for user_data in self.users:
             if username == user_data["username"] and password == user_data["password"]:
-                self.main.route(self.main.interface)
+                self.main.route(self.main.pacemaker_sel)
                 return messagebox.showinfo("Login", "Login successful!")
 
         return messagebox.showerror("Login Error", "Invalid username or password.")

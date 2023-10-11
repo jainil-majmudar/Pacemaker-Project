@@ -20,6 +20,8 @@ class SimpleLoginApp(tk.Tk):
        
         self.interface = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
         self.interface.pack(side='right', fill='both', expand=True)
+        
+
 
         self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
         self.register_frame.pack(side='right', fill='both', expand=True)
@@ -72,7 +74,7 @@ class SimpleLoginApp(tk.Tk):
         self.back_button.place(x=465, y=520)
 
         # Initialize user manager and pacemaker interface
-        self.pacemaker_interface = PacemakerInterface(self.interface)
+        
 
     def login(self):
         username = self.username_entry.get()
@@ -96,5 +98,6 @@ class SimpleLoginApp(tk.Tk):
 if __name__ == "__main__":
     app = SimpleLoginApp()
     user_manager = UserManager("DCM/user_data.json", app)
+    pacemaker_interface = PacemakerInterface(app.interface, app)
     app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.mainloop()

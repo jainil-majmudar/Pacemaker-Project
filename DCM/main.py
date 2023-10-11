@@ -78,13 +78,14 @@ class SimpleLoginApp(tk.Tk):
         self.pacemaker_label.place(x=50, y=100)
         self.pacemaker_entry = tk.Entry(self.interface, width=46, fg='black', border=2, bg='white')
         self.pacemaker_entry.place(x=280, y=100)
-
+        self.submit_button = tk.Button(self.interface, width='10', text = "Submit", font=("Inter", 8, 'bold'), fg='white', bg='black', cursor='hand2')
+        self.submit_button.place(x=600,y=98)
         #Following Code Only Shows Login Frame and Lets Login Button Access User Data
         self.load_user_data()
         self.register_frame.pack_forget()
         self.interface.pack_forget()
 
-
+ 
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()

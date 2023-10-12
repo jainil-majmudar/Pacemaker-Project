@@ -48,20 +48,63 @@ class ModeSel:
 
                 if param == "Lower Rate Limit":
                     # Create a single slider for Rate Limit with dynamic resolution
-                    scale = tk.Scale(self.root, from_=30, to=175, orient="horizontal", resolution=5)
+                    scale = tk.Scale(self.root, from_=30, to=175, orient="horizontal", resolution=5,length=400)
                     scale.set(60)  # Set the initial value
-                    scale.place(x=250, y=row)
-
+                    scale.place(x=250, y=row-15)
                     # Bind an update function to change resolution based on the slider position
                     scale.bind("<Motion>", lambda event, scale=scale: self.update_scale_resolution(scale, scale.get()))
+                elif param == "Upper Rate Limit":
+                    scale = tk.Scale(self.root, from_=50, to=175, resolution=5, orient="horizontal",length=400)
+                    scale.set(120)
+                    scale.place(x=250, y=row-15)
                 elif param in ["Atrial Amplitude", "Ventricular Amplitude"]:
                     # Create a slider for Amplitude parameters
-                    scale = tk.Scale(self.root, from_=0, to=3.2, resolution=0.1, orient="horizontal")
-                    scale.place(x=250, y=row)
-                # Add conditions for other parameters as needed
+                    scale = tk.Scale(self.root, from_=0, to=7.0, resolution=0.1, orient="horizontal",length=400)
+                    scale.set(3.5)
+                    scale.place(x=250, y=row-15)
+                elif param in ["Atrial Pulse Width", "Ventricular Pulse Width"]:
+                    # Create a slider for Amplitude parameters
+                    scale = tk.Scale(self.root, from_=0.05, to=1.9, resolution=0.1, orient="horizontal",length=400)
+                    scale.set(0.4)
+                    scale.place(x=250, y=row-15)
+                elif param in ["Atrial Sensitivity", "Ventricular Sensitivity"]:
+                    # Create a slider for Amplitude parameters
+                    scale = tk.Scale(self.root, from_=0.25, to=10, resolution=0.1, orient="horizontal",length=400)
+                    if(param == "Atrial Sensitivity"):
+                        scale.set(0.75)
+                    else:
+                        scale.set(2.5)
+                    scale.place(x=250, y=row-15)
+                elif param == "VRP":
+                    # Create a single slider for Rate Limit with dynamic resolution
+                    scale = tk.Scale(self.root, from_=150, to=500, orient="horizontal", resolution=10,length=400)
+                    scale.set(320)  # Set the initial value
+                    scale.place(x=250, y=row-15)
+                elif param == "ARP":
+                    # Create a single slider for Rate Limit with dynamic resolution
+                    scale = tk.Scale(self.root, from_=150, to=500, orient="horizontal", resolution=10,length=400)
+                    scale.set(250)  # Set the initial value
+                    scale.place(x=250, y=row-15)
+                elif param =="PVARP":
+                    # Create a single slider for Rate Limit with dynamic resolution
+                    scale = tk.Scale(self.root, from_=150, to=500, orient="horizontal", resolution=10,length=400)
+                    scale.set(250)  # Set the initial value
+                    scale.place(x=250, y=row-15)
+                elif param == "Hysteresis":
+                    # Create a single slider for Rate Limit with dynamic resolution
+                    scale = tk.Scale(self.root, from_=0, to=175, orient="horizontal", resolution=10,length=400)
+                    scale.set(0)  # Set the initial value
+                    scale.place(x=250, y=row-15)
+                elif param == "Rate Smoothing":
+                    # Create a single slider for Rate Limit with dynamic resolution
+                    scale = tk.Scale(self.root, from_=0, to=25, orient="horizontal", resolution=10,length=400)
+                    scale.set(0)  # Set the initial value
+                    scale.place(x=250, y=row-15)
+             
+                
 
                 self.current_widgets.extend([label, scale])
-                row += 60  # Adjust the vertical spacing
+                row += 50  # Adjust the vertical spacing
 
         else:
             pass

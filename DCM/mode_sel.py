@@ -6,6 +6,7 @@ class ModeSel:
     def __init__(self, root, main_app):
         self.root = root
         self.main = main_app
+        self.error_labels = {}
 
         self.mode_label = tk.Label(root, text="Select Mode")
         self.mode_label.place(x=100, y=30)
@@ -66,10 +67,15 @@ class ModeSel:
                 # Set the initial value from the parameter_values dictionary
                 entry.insert(0, str(self.parameter_values[param]))
 
-                # Bind the entry to a function that updates the parameter_values dictionary
+                # Bind the entry to a function that updates the parameter_values dictionary and displays error messages
                 entry.bind("<FocusOut>", lambda event, entry=entry, param=param: self.update_parameter_value(entry, param))
-                row += 30  # Adjust the vertical spacing
+                
 
+                # Create an error label next to the entry (initially empty)
+                error_label = tk.Label(self.root, text="", fg="red")
+                error_label.place(x=450, y=row)
+                self.error_labels[param] = error_label  # Store the error label for later use
+                row += 30  # Adjust the vertical spacing
             # Update parameter_values with the selected pacemaker
             self.parameter_values['Pacemaker'] = chosen_pacemaker
 
@@ -85,34 +91,38 @@ class ModeSel:
                     if value % 5 == 0:
                         return True
                     else:
-                        messagebox.showerror("Invalid Input", "Lower Rate Limit should be a multiple of 5 between 30 and 50.")
+                        return "Lower Rate Limit should be a multiple of 5 between 30 and 50."
                 elif 50 < value <= 90:
                     if value.is_integer():
                         return True
                     else:
-                        messagebox.showerror("Invalid Input", "Lower Rate Limit should be an integer between 50 and 90.")
+                        return "Lower Rate Limit should be an integer between 50 and 90."
                 else:
                     if 90 <= value <= 175:
                         if value % 5 == 0:
                             return True
                         else:
-                            messagebox.showerror("Invalid Input", "Lower Rate Limit should be a multiple of 5 between 90 and 175.")
+                            return "Lower Rate Limit should be a multiple of 5 between 90 and 175."
             else:
-                messagebox.showerror("Invalid Input", "Lower Rate Limit should be between 30 and 175.")
+                return "Lower Rate Limit should be between 30 and 175."
         except ValueError:
-            messagebox.showerror("Invalid Input", "Lower Rate Limit should be a valid number.")
-        return False
+            return "Lower Rate Limit should be a valid number."
+     
 
     def update_parameter_value(self, entry, param):
         value = entry.get()
         # Perform validation for each parameter here if needed
         if param == "Lower Rate Limit":
-            if self.validate_lower_rate_limit(value):
+            if self.validate_lower_rate_limit(value) == "True":
                 self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_lower_rate_limit(value)
         else:
             try:
                 value = float(value)
                 self.parameter_values[param] = value
+                self.error_labels[param]["text"] = ""  # Clear the error message
             except ValueError:
                 pass
 

@@ -50,9 +50,12 @@ class ModeSel:
     def render(self, mode):
         chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()  # Get the selected pacemaker from the main app
         self.pacemaker = chosen_pacemaker
-        # Clear existing widgets
+        # Clear existing widgets and reset error labels
         for widget in self.current_widgets:
             widget.destroy()
+
+        for param, error_label in self.error_labels.items():
+            error_label.config(text="")  # Reset the error label text to clear errors
 
         if mode in self.mode_parameters:
             parameters = self.mode_parameters[mode]
@@ -69,20 +72,20 @@ class ModeSel:
 
                 # Bind the entry to a function that updates the parameter_values dictionary and displays error messages
                 entry.bind("<FocusOut>", lambda event, entry=entry, param=param: self.update_parameter_value(entry, param))
-                
 
                 # Create an error label next to the entry (initially empty)
-                error_label = tk.Label(self.root, text="", fg="red")
+                error_label = tk.Label(self.root, text="", fg="red", bg="#F5E8B7")
                 error_label.place(x=450, y=row)
                 self.error_labels[param] = error_label  # Store the error label for later use
                 row += 30  # Adjust the vertical spacing
-            # Update parameter_values with the selected pacemaker
-            self.parameter_values['Pacemaker'] = chosen_pacemaker
 
-            submit_button = tk.Button(self.root, text="Submit Parameters", command=self.show_parameter_values)
-            submit_button.place(x=250, y=row)
-            self.current_widgets.append(submit_button)
-    
+        # Update parameter_values with the selected pacemaker
+        self.parameter_values['Pacemaker'] = chosen_pacemaker
+
+        submit_button = tk.Button(self.root, text="Submit Parameters", command=self.show_parameter_values)
+        submit_button.place(x=250, y=row)
+        self.current_widgets.append(submit_button)
+
     def validate_lower_rate_limit(self, value):
         try:
             value = float(value)

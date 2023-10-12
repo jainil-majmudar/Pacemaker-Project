@@ -6,7 +6,6 @@ class ModeSel:
     def __init__(self, root, main_app):
         self.root = root
         self.main = main_app
-        
 
         self.mode_label = tk.Label(root, text="Select Mode")
         self.mode_label.place(x=100, y=30)
@@ -29,7 +28,23 @@ class ModeSel:
         }
 
         self.current_widgets = []  # To store current widgets for mode parameters
-        self.parameter_values = {}  # Dictionary to store parameter values
+
+        # Initialize the parameter values dictionary with default values
+        self.parameter_values = {
+            "Lower Rate Limit": 60,
+            "Upper Rate Limit": 120,
+            "Atrial Amplitude": 3.5,
+            "Atrial Pulse Width": 0.4,
+            "Atrial Sensitivity": 0.75,
+            "Ventricular Amplitude": 3.5,
+            "Ventricular Pulse Width": 0.4,
+            "Ventricular Sensitivity": 2.5,
+            "ARP": 250,
+            "VRP": 320,
+            "PVARP": 250,
+            "Hysteresis": 0,
+            "Rate Smoothing": 0
+        }
 
     def render(self, mode):
         chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()  # Get the selected pacemaker from the main app
@@ -47,6 +62,9 @@ class ModeSel:
                 entry = tk.Entry(self.root)
                 entry.place(x=250, y=row)
                 self.current_widgets.extend([label, entry])
+
+                # Set the initial value from the parameter_values dictionary
+                entry.insert(0, str(self.parameter_values[param]))
 
                 # Bind the entry to a function that updates the parameter_values dictionary
                 entry.bind("<FocusOut>", lambda event, entry=entry, param=param: self.update_parameter_value(entry, param))
@@ -68,27 +86,23 @@ class ModeSel:
                         return True
                     else:
                         messagebox.showerror("Invalid Input", "Lower Rate Limit should be a multiple of 5 between 30 and 50.")
-                        return False
                 elif 50 < value <= 90:
                     if value.is_integer():
                         return True
                     else:
                         messagebox.showerror("Invalid Input", "Lower Rate Limit should be an integer between 50 and 90.")
-                        return False
                 else:
                     if 90 <= value <= 175:
                         if value % 5 == 0:
                             return True
                         else:
                             messagebox.showerror("Invalid Input", "Lower Rate Limit should be a multiple of 5 between 90 and 175.")
-                            return False
             else:
                 messagebox.showerror("Invalid Input", "Lower Rate Limit should be between 30 and 175.")
-                return False
         except ValueError:
             messagebox.showerror("Invalid Input", "Lower Rate Limit should be a valid number.")
-            return False
-    
+        return False
+
     def update_parameter_value(self, entry, param):
         value = entry.get()
         # Perform validation for each parameter here if needed
@@ -101,36 +115,43 @@ class ModeSel:
                 self.parameter_values[param] = value
             except ValueError:
                 pass
-    
+
     def store_parameter_values(self):
-            # Load existing JSON data
-            try:
-                with open("DCM/DataStorage/pacemaker_data.json", "r") as file:
-                    json_data = json.load(file)
-            except FileNotFoundError:
-                json_data = {}
+    # Load existing JSON data
+        try:
+            with open("DCM/DataStorage/pacemaker_data.json", "r") as file:
+                json_data = json.load(file)
+        except FileNotFoundError:
+            json_data = {}
 
-            # Get the selected pacemaker
-            selected_pacemaker = self.parameter_values['Pacemaker']
+        # Get the selected pacemaker and mode
+        selected_pacemaker = self.parameter_values['Pacemaker']
+        selected_mode = self.mode_var.get()
 
-            # Check if there is an entry for the selected pacemaker
-            if selected_pacemaker in json_data:
-                # Update the existing entry with the new parameter values
-                json_data[selected_pacemaker].update(self.parameter_values)
-            else:
-                # Create a new entry for the selected pacemaker
-                json_data[selected_pacemaker] = self.parameter_values
+        # Filter the parameter_values dictionary to include only the parameters for the selected mode
+        selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[selected_mode]}
 
-            # Save the updated JSON data back to the file
-            with open("DCM/DataStorage/pacemaker_data.json", "w") as file:
-                json.dump(json_data, file)
+        # Check if there is an entry for the selected pacemaker
+        if selected_pacemaker in json_data:
+            # Update the existing entry with the new parameter values
+            json_data[selected_pacemaker][selected_mode] = selected_mode_params
+        else:
+            # Create a new entry for the selected pacemaker
+            json_data[selected_pacemaker] = {selected_mode: selected_mode_params}
 
-            print(f"Stored parameter values for pacemaker '{selected_pacemaker}'.")
+        # Save the updated JSON data back to the file
+        with open("DCM/DataStorage/pacemaker_data.json", "w") as file:
+            json.dump(json_data, file)
+
+        print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
 
     def show_parameter_values(self):
-            # Update parameter_values with the selected pacemaker
-            self.parameter_values['Pacemaker'] = self.pacemaker
-            self.store_parameter_values()
+        # Update parameter_values with the selected pacemaker
+        self.parameter_values['Pacemaker'] = self.pacemaker
+        self.store_parameter_values()
 
-            print("Parameter values:", self.parameter_values)
-            # You can now use the parameter values as needed
+        # Filter the parameter_values dictionary to include only the parameters for the selected mode
+        selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[self.mode_var.get()]}
+
+        print("Parameter values:", selected_mode_params)
+        # You can now use the parameter values as needed

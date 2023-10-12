@@ -1,5 +1,6 @@
 import tkinter as tk
 import json
+import tkinter.messagebox as messagebox
 
 class ModeSel:
     def __init__(self, root, main_app):
@@ -57,16 +58,50 @@ class ModeSel:
             submit_button = tk.Button(self.root, text="Submit Parameters", command=self.show_parameter_values)
             submit_button.place(x=250, y=row)
             self.current_widgets.append(submit_button)
-
+    
+    def validate_lower_rate_limit(self, value):
+        try:
+            value = float(value)
+            if 30 <= value <= 175:
+                if 30 <= value <= 50:
+                    if value % 5 == 0:
+                        return True
+                    else:
+                        messagebox.showerror("Invalid Input", "Lower Rate Limit should be a multiple of 5 between 30 and 50.")
+                        return False
+                elif 50 < value <= 90:
+                    if value.is_integer():
+                        return True
+                    else:
+                        messagebox.showerror("Invalid Input", "Lower Rate Limit should be an integer between 50 and 90.")
+                        return False
+                else:
+                    if 90 <= value <= 175:
+                        if value % 5 == 0:
+                            return True
+                        else:
+                            messagebox.showerror("Invalid Input", "Lower Rate Limit should be a multiple of 5 between 90 and 175.")
+                            return False
+            else:
+                messagebox.showerror("Invalid Input", "Lower Rate Limit should be between 30 and 175.")
+                return False
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Lower Rate Limit should be a valid number.")
+            return False
+    
     def update_parameter_value(self, entry, param):
         value = entry.get()
         # Perform validation for each parameter here if needed
-        # For example, you can check if value is a valid number
-        try:
-            value = float(value)
-            self.parameter_values[param] = value
-        except ValueError:
-            pass
+        if param == "Lower Rate Limit":
+            if self.validate_lower_rate_limit(value):
+                self.parameter_values[param] = float(value)
+        else:
+            try:
+                value = float(value)
+                self.parameter_values[param] = value
+            except ValueError:
+                pass
+    
     def store_parameter_values(self):
             # Load existing JSON data
             try:

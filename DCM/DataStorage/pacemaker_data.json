@@ -1,1 +1,1 @@
-{"2": {"Pacemaker": "2", "Lower Rate Limit": 2.0, "Upper Rate Limit": 2.0, "Atrial Amplitude": 2.0}}
+{"2": {"Pacemaker": "2", "Lower Rate Limit": 35.0, "Upper Rate Limit": 2.0, "Atrial Amplitude": 3.0, "Atrial Pulse Width": 2.0}}

@@ -24,9 +24,57 @@ class ModeSel:
 
         self.current_widgets = []  # To store current widgets for mode parameters
 
-    def update_scale_resolution(self, scale, current_value):
+    def update_lrl_resolution(self, scale, current_value):
         # Define the range and corresponding resolutions
         ranges_and_resolutions = [(30, 50, 5), (50, 90, 1), (90, 175, 5)]
+
+        # Determine the appropriate resolution for the current position
+        for start, end, resolution in ranges_and_resolutions:
+            if start <= current_value <= end:
+                scale.config(resolution=resolution)
+                break
+    
+    def update_amplitude_resolution(self, scale, current_value):
+        # Define the range and corresponding resolutions
+        ranges_and_resolutions = [(0, 0.5, 0.5), (0.5, 3.2, 0.1), (3.2, 3.5, 0.3), (3.5, 7.0, 0.5)]
+
+        # Determine the appropriate resolution for the current position
+        for start, end, resolution in ranges_and_resolutions:
+            if start <= current_value <= end:
+                scale.config(resolution=resolution)
+                break
+    
+    def update_width_resolution(self, scale, current_value):
+        # Define the range and corresponding resolutions
+        ranges_and_resolutions = [(0.05, 0.1, 0.05), (0.1, 1.9, 0.1)]
+
+        # Determine the appropriate resolution for the current position
+        for start, end, resolution in ranges_and_resolutions:
+            if start <= current_value <= end:
+                scale.config(resolution=resolution)
+                break
+    
+    def update_sensitivity_resolution(self, scale, current_value):
+        # Define the range and corresponding resolutions
+        ranges_and_resolutions = [(0.25, 1.0, 0.25), (1.0, 10, 0.5)]
+
+        # Determine the appropriate resolution for the current position
+        for start, end, resolution in ranges_and_resolutions:
+            if start <= current_value <= end:
+                scale.config(resolution=resolution)
+                break
+    def update_hysteresis_resolution(self, scale, current_value):
+        # Define the range and corresponding resolutions
+        ranges_and_resolutions = [(0,30,30),(30, 50, 5), (50, 90, 1), (90, 175, 5)]
+
+        # Determine the appropriate resolution for the current position
+        for start, end, resolution in ranges_and_resolutions:
+            if start <= current_value <= end:
+                scale.config(resolution=resolution)
+                break
+    def update_rs_resolution(self, scale, current_value):
+        # Define the range and corresponding resolutions
+        ranges_and_resolutions = [(0,25,3)]
 
         # Determine the appropriate resolution for the current position
         for start, end, resolution in ranges_and_resolutions:
@@ -52,7 +100,7 @@ class ModeSel:
                     scale.set(60)  # Set the initial value
                     scale.place(x=250, y=row-15)
                     # Bind an update function to change resolution based on the slider position
-                    scale.bind("<Motion>", lambda event, scale=scale: self.update_scale_resolution(scale, scale.get()))
+                    scale.bind("<Motion>", lambda event, scale=scale: self.update_lrl_resolution(scale, scale.get()))
                 elif param == "Upper Rate Limit":
                     scale = tk.Scale(self.root, from_=50, to=175, resolution=5, orient="horizontal",length=400)
                     scale.set(120)
@@ -62,11 +110,13 @@ class ModeSel:
                     scale = tk.Scale(self.root, from_=0, to=7.0, resolution=0.1, orient="horizontal",length=400)
                     scale.set(3.5)
                     scale.place(x=250, y=row-15)
+                    scale.bind("<Motion>", lambda event, scale=scale: self.update_amplitude_resolution(scale, scale.get()))
                 elif param in ["Atrial Pulse Width", "Ventricular Pulse Width"]:
                     # Create a slider for Amplitude parameters
                     scale = tk.Scale(self.root, from_=0.05, to=1.9, resolution=0.1, orient="horizontal",length=400)
                     scale.set(0.4)
                     scale.place(x=250, y=row-15)
+                    scale.bind("<Motion>", lambda event, scale=scale: self.update_width_resolution(scale, scale.get()))
                 elif param in ["Atrial Sensitivity", "Ventricular Sensitivity"]:
                     # Create a slider for Amplitude parameters
                     scale = tk.Scale(self.root, from_=0.25, to=10, resolution=0.1, orient="horizontal",length=400)
@@ -75,6 +125,7 @@ class ModeSel:
                     else:
                         scale.set(2.5)
                     scale.place(x=250, y=row-15)
+                    scale.bind("<Motion>", lambda event, scale=scale: self.update_sensitivity_resolution(scale, scale.get()))
                 elif param == "VRP":
                     # Create a single slider for Rate Limit with dynamic resolution
                     scale = tk.Scale(self.root, from_=150, to=500, orient="horizontal", resolution=10,length=400)
@@ -95,12 +146,13 @@ class ModeSel:
                     scale = tk.Scale(self.root, from_=0, to=175, orient="horizontal", resolution=10,length=400)
                     scale.set(0)  # Set the initial value
                     scale.place(x=250, y=row-15)
+                    scale.bind("<Motion>", lambda event, scale=scale: self.update_hysteresis_resolution(scale, scale.get()))
                 elif param == "Rate Smoothing":
                     # Create a single slider for Rate Limit with dynamic resolution
                     scale = tk.Scale(self.root, from_=0, to=25, orient="horizontal", resolution=10,length=400)
                     scale.set(0)  # Set the initial value
                     scale.place(x=250, y=row-15)
-             
+                    scale.bind("<Motion>", lambda event, scale=scale: self.update_rs_resolution(scale, scale.get()))
                 
 
                 self.current_widgets.extend([label, scale])

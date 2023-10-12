@@ -1,1 +1,1 @@
-{"pacemaker": "2", "mode": 0, "upper_rate_limit": 0, "lower_rate_limit": 0}
+{"2": {"Pacemaker": "2", "Lower Rate Limit": 2.0, "Upper Rate Limit": 2.0, "Atrial Amplitude": 2.0}}

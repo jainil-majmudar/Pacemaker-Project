@@ -101,5 +101,7 @@ if __name__ == "__main__":
     user_manager = UserManager("DCM/DataStorage/user_data.json", app)
     pacemaker_interface = PacemakerInterface(app.pacemaker_sel, app)
     mode_selection = ModeSel(app.mode_sel,app)
+    app.mode_selection = mode_selection
+    app.pacemaker_interface = pacemaker_interface
     app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.mainloop()

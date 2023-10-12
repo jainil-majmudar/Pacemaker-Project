@@ -28,23 +28,8 @@ class PacemakerInterface:
         self.back_button = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
         self.back_button.place(x=1000, y=20)
 
-        # Load and initialize pacemaker data
-        self.pacemaker_data = {}
-        self.load_pacemaker_data()
-
         # Place the widgets in the interface
         self.root.pack()
-
-    def load_pacemaker_data(self):
-        try:
-            with open("DCM/DataStorage/pacemaker_data.json", "r") as file:
-                self.pacemaker_data = json.load(file)
-        except FileNotFoundError:
-            self.pacemaker_data = {}
-
-    def save_pacemaker_data(self):
-        with open("DCM/DataStorage/pacemaker_data.json", "w") as file:
-            json.dump(self.pacemaker_data, file)
 
     def submit(self,entry):
         
@@ -58,15 +43,7 @@ class PacemakerInterface:
         else:
             messagebox.showinfo("Note!","Connected successfully")
             self.main.route(self.main.mode_sel)
-        
-        # # Store the data in the pacemaker_data JSON
-        self.pacemaker_data = {
-            "pacemaker": entry,
-            "mode": 0,
-            "upper_rate_limit": 0,
-            "lower_rate_limit": 0
-        }
-        self.save_pacemaker_data()
+   
 
         
 

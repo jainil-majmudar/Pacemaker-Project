@@ -41,7 +41,7 @@ class ModeSel:
 
         if mode in self.mode_parameters:
             parameters = self.mode_parameters[mode]
-            row = 70  # Adjust the starting Y position
+            row = 100  # Adjust the starting Y position
             for param in parameters:
                 label = tk.Label(self.root, text=param)
                 label.place(x=100, y=row)

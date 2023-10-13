@@ -20,6 +20,9 @@ class ModeSel:
         display_data_button = tk.Button(root, text = "Display Existing Data", command=lambda :self.main.route(self.main.display_frame))
         display_data_button.place(x=700, y=30)
 
+        egram_button = tk.Button(root,text = "View Egram Data", command=lambda :self.main.route(self.main.egram_frame))
+        egram_button.place(x=500,y=30)
+
         self.back_button = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
         self.back_button.place(x=1000, y=20)
 

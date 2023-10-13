@@ -9,16 +9,16 @@ class PacemakerInterface:
 
         # Load the previously selected pacemaker from a file
         self.prev_pacemaker = self.load_previous_pacemaker()
-        self.previous_pacemaker_label = tk.Label(root, text=f"Previous Pacemaker Connected: {self.prev_pacemaker}")
+        self.previous_pacemaker_label = tk.Label(root, text=f"Previous Pacemaker Connected: {self.prev_pacemaker}", bg='#F5E8B7')
         self.previous_pacemaker_label.place(x=100, y=50)
 
         # Create and configure the pacemaker interface widgets
-        self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To")
+        self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To", bg='#F5E8B7')
         self.pacemaker_label.place(x=100, y=100)
         self.pacemaker_entry = tk.Entry(root, width=46)
         self.pacemaker_entry.place(x=300, y=100)
 
-        self.connection_label = tk.Label(root, text="Communication Established: No")
+        self.connection_label = tk.Label(root, text="Communication Established: No", bg='#F5E8B7')
         self.connection_label.place(x=100, y=500)
 
         self.submit_button = tk.Button(root, text="Submit", command=lambda: self.submit(self.pacemaker_entry.get()))

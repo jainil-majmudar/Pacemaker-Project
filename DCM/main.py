@@ -2,6 +2,7 @@ import tkinter as tk
 from user_manager import UserManager
 from pacemaker_interface import PacemakerInterface
 from mode_sel import ModeSel
+from egram import Egram
 from display import Display
 from PIL import ImageTk, Image
 
@@ -28,6 +29,8 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
 
         self.display_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+
+        self.egram_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
         
 
         # Load and resize the image
@@ -107,8 +110,10 @@ if __name__ == "__main__":
     pacemaker_interface = PacemakerInterface(app.pacemaker_sel, app)
     mode_selection = ModeSel(app.mode_sel,app)
     display_data = Display(app.display_frame,app)
+    egram_data = Egram(app.egram_frame,app)
     app.mode_selection = mode_selection
     app.pacemaker_interface = pacemaker_interface
     app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.display_data = display_data
+    app.egram_data = egram_data
     app.mainloop()

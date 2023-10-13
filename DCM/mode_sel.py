@@ -48,11 +48,14 @@ class ModeSel:
         }
 
     def render(self, mode):
-        chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()  # Get the selected pacemaker from the main app
+        chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()
         self.pacemaker = chosen_pacemaker
+
         # Clear existing widgets and reset error labels
         for widget in self.current_widgets:
             widget.destroy()
+
+        self.current_widgets = []  # Reset the list
 
         for param, error_label in self.error_labels.items():
             error_label.config(text="")  # Reset the error label text to clear errors

@@ -44,7 +44,7 @@ class ModeSel:
             "VRP": 320,
             "PVARP": 250,
             "Hysteresis": 'OFF',
-            "Rate Smoothing": 'OFF'
+            "Rate Smoothing": 0
         }
 
     def render(self, mode):
@@ -192,6 +192,8 @@ class ModeSel:
 
     def validate_hysteresis(self, value):
         try:
+            if value == "OFF" or value == "Off":
+                return "Valid"
             value = float(value)
             if 0 <= value <= 175:
                 if value==0:
@@ -200,22 +202,22 @@ class ModeSel:
                     if value % 5 == 0:
                         return "Valid"
                     else:
-                        return "Hysterisis should be a multiple of 5 if between 30ppm and 50ppm."
+                        return "Hysteresis should be a multiple of 5 if between 30ppm and 50ppm."
                 elif 50 <= value <= 90:
                     if value.is_integer():
                         return "Valid"
                     else:
-                        return "Hysterisis should be an integer if between 50ppm and 90ppm."
+                        return "Hysteresis should be an integer if between 50ppm and 90ppm."
                 else:
                     if 90 <= value <= 175:
                         if value % 5 == 0:
                             return "Valid"
                         else:
-                            return "Hysterisis should be a multiple of 5 between 90ppm and 175ppm."
+                            return "Hysteresis should be a multiple of 5 between 90ppm and 175ppm."
             else:
-                return "Hysterisis should be between 0ppm and 175ppm."
+                return "Hysteresis should be between 0ppm and 175ppm."
         except ValueError:
-            return "Hysterisis should be a valid value."
+            return "Hysteresis should be a valid value."
         
     def validate_rate_smoothing(self, value):
         try:
@@ -363,12 +365,57 @@ class ModeSel:
         print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
 
     def show_parameter_values(self):
-        # Update parameter_values with the selected pacemaker
-        self.parameter_values['Pacemaker'] = self.pacemaker
-        self.store_parameter_values()
+        # Check for validation errors
+        validation_errors = self.validate_parameters()
 
-        # Filter the parameter_values dictionary to include only the parameters for the selected mode
-        selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[self.mode_var.get()]}
+        if validation_errors:
+            error_message = "Validation Errors:\n"
+            for param, error in validation_errors.items():
+                error_message += f"{param}: {error}\n"
 
-        print("Parameter values:", selected_mode_params)
-        # You can now use the parameter values as needed
+            messagebox.showerror("Validation Errors", error_message)
+        else:
+             # Update parameter_values with the selected pacemaker
+            self.parameter_values['Pacemaker'] = self.pacemaker
+            self.store_parameter_values()
+
+            # Filter the parameter_values dictionary to include only the parameters for the selected mode
+            selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[self.mode_var.get()]}
+
+            print("Parameter values:", selected_mode_params)
+            messagebox.showinfo("Success!", "Your data has submitted")
+            # You can now use the parameter values as needed
+
+    def validate_parameters(self):
+        validation_errors = {}
+
+        # Replace the comments below with the actual validation logic for each parameter
+        for param, entry in zip(self.mode_parameters[self.mode_var.get()], self.current_widgets[1::2]):  # Assumes the order of widgets in current_widgets
+            value = entry.get()
+            error = self.validate_parameter(param, value)
+            if error != "Valid":
+                validation_errors[param] = error
+
+        return validation_errors
+
+    def validate_parameter(self, param, value):
+        # Validation logic for each parameter
+        if param == "Lower Rate Limit":
+            return self.validate_lower_rate_limit(value)
+        elif param == "Upper Rate Limit":
+            return self.validate_upper_rate_limit(value)
+        elif param == "Atrial Amplitude" or param == "Ventricular Amplitude":
+            return self.validate_amplitude(value)
+        elif param == "Atrial Pulse Width" or param == "Ventricular Pulse Width":
+            return self.validate_pulse_width(value)
+        elif param == "Atrial Sensitivity" or param == "Ventricular Sensitivity":
+            return self.validate_sensitivity(value)
+        elif param == "ARP" or param == "PVARP" or param == "VRP":
+            return self.validate_refractory_period(value)
+        elif param == "Hysteresis":
+            return self.validate_hysteresis(value)
+        elif param == "Rate Smoothing":
+            return self.validate_rate_smoothing(value)
+
+        # If no specific validation is found for a parameter, return "Valid" by default
+        return "Valid"

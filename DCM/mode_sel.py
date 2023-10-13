@@ -43,8 +43,8 @@ class ModeSel:
             "ARP": 250,
             "VRP": 320,
             "PVARP": 250,
-            "Hysteresis": 0,
-            "Rate Smoothing": 0
+            "Hysteresis": 'OFF',
+            "Rate Smoothing": 'OFF'
         }
 
     def render(self, mode):
@@ -92,35 +92,297 @@ class ModeSel:
             if 30 <= value <= 175:
                 if 30 <= value <= 50:
                     if value % 5 == 0:
-                        return True
+                        return "Valid"
                     else:
-                        return "Lower Rate Limit should be a multiple of 5 between 30 and 50."
-                elif 50 < value <= 90:
+                        return "Lower Rate Limit should be a multiple of 5 if between 30ppm and 50ppm."
+                elif 50 <= value <= 90:
                     if value.is_integer():
-                        return True
+                        return "Valid"
                     else:
-                        return "Lower Rate Limit should be an integer between 50 and 90."
+                        return "Lower Rate Limit should be an integer if between 50ppm and 90ppm."
                 else:
                     if 90 <= value <= 175:
                         if value % 5 == 0:
-                            return True
+                            return "Valid"
                         else:
-                            return "Lower Rate Limit should be a multiple of 5 between 90 and 175."
+                            return "Lower Rate Limit should be a multiple of 5 between 90ppm and 175ppm."
             else:
-                return "Lower Rate Limit should be between 30 and 175."
+                return "Lower Rate Limit should be between 30ppm and 175ppm."
         except ValueError:
-            return "Lower Rate Limit should be a valid number."
+            return "Lower Rate Limit should be a valid value."
+        
+
+    def validate_upper_rate_limit(self, value):
+        try:
+            value = float(value)
+            if 50 <= value <= 175:
+                if value % 5 == 0:
+                    return "Valid"
+                else:
+                    return "Upper Rate Limit should be a multiple of 5 between 50ppm and 175ppm."
+            else:
+                return "Upper Rate Limit should be between 50ppm and 175ppm."
+        except ValueError:
+            return "Upper Rate Limit should be a valid value."
      
+    def validate_atrial_amplitude(self, value):
+        try:
+            value = float(value)
+            if value==0:
+                return "OFF"
+            elif 0.5 <= value <= 3.2:
+                if value % 0.1 == 0:
+                    return "Valid"
+                else:
+                    return "Atrial Amplitude should be a multiple of 0.1 if between 0.5V and 3.2V."
+            elif 3.5 <= value <= 7.0:
+                if value % 0.5 == 0:
+                    return "Valid"
+                else:
+                    return "Atrial Amplitude should a multiple of 0.5 if between 3.5V and 7.0V."
+            else:
+                return "Atrial Amplitude should be between 0.5V - 3.2V or 3.5V - 7.0V"
+        except ValueError:
+            return "Atrial Amplitude should be a valid value."
+        
+    def validate_atrial_pulse_width(self, value):
+        try:
+            value = float(value)
+            if value==0.05:
+                return "Valid"
+            elif 0.1 <= value <= 1.9:
+                if value % 0.1 == 0:
+                    return "Valid"
+                else:
+                    return "Atrial Pulse Width should be a multiple of 0.1 if between 0.1ms and 1.9ms"
+            else:
+                return "Atrial Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
+        except ValueError:
+            return "Atrial Pulse Width should be a valid value."
+        
+    def validate_ventricular_amplitude(self, value):
+        try:
+            value = float(value)
+            if value==0:
+                return "OFF"
+            elif 0.5 <= value <= 3.2:
+                if value % 0.1 == 0:
+                    return "Valid"
+                else:
+                    return "Ventricular Amplitude should be a multiple of 0.1 if between 0.5 and 3.2"
+            elif 3.5 <= value <= 7.0:
+                if value % 0.5 == 0:
+                    return "Valid"
+                else:
+                    return "Ventricular Amplitude should be a multiple of 0.5 if between 3.5 and 7.0"
+            else:
+                return "Ventricular Amplitude Width should be between either 0.5V - 3.2V or 3.5V - 7.0V"
+        except ValueError:
+            return "Ventricular Amplitude Width should be a valid value."
+
+    def validate_ventricular_pulse_width(self, value):
+        try:
+            value = float(value)
+            if value==0.05:
+                return "Valid"
+            elif 0.1 <= value <= 1.9:
+                if value % 0.5 == 0:
+                    return "Valid"
+                else:
+                    return "Ventricular Pulse Width should be a multiple of 0.5 if between 0.1ms and 1.9ms"
+            else:
+                return "Ventricular Pulse Width should be either 0.05ms or between 0.1ms and 1.09ms"
+        except ValueError:
+            return "Ventricular Pulse Width should be a valid value."
+
+    def validate_atrial_sensitivity(self, value):
+        try:
+            value = float(value)
+            if value == 0.25 or value == 0.5 or value == 0.75:
+                return "Valid"
+            elif 1.0 <= value <= 10.0:
+                if value % 0.5 == 0:
+                    return "Valid"
+                else:
+                    return "Atrial Sensitivity should be a multiple of 0.5 if between 1mV and 10mV."
+            else:
+                return "Atrial Sensitivity should be a either 0.25mV, 0.5mV, 0.75mV or between 1mV and 10mV."
+        except ValueError:
+            return "Atrial Sensitivity should be a valid value."
+        
+    def validate_arp(self, value):
+        try:
+            value = float(value)
+            if 150 <= value <= 500:
+                if value % 10 == 0:
+                    return "Valid"
+                else:
+                    return "ARP value should be a multiple of 10 between 150ms and 500ms."
+            else: 
+                return "ARP value should be between 150ms and 500ms."
+        except ValueError:
+            return "ARP value should be a valid value."
+        
+    def validate_pvarp(self, value):
+        try:
+            value = float(value)
+            if 150 <= value <= 500:
+                if value % 10 == 0:
+                    return "Valid"
+                else:
+                    return "PVARP should be a multiple of 10 between 150ms and 175."
+            else: 
+                return "PVARP value should be between 150ms and 500ms."
+        except ValueError:
+            return "PVARP value should be a valid number."
+        
+    def validate_ventricular_sensitivity(self, value):
+        try:
+            value = float(value)
+            if value == 0.25 or value == 0.5 or value == 0.75:
+                return "Valid"
+            elif 1.0 <= value <= 10:
+                if value % 0.5 == 0:
+                    return "Valid"
+                else:
+                    return "Ventricular Sensitivity should be a multiple of 0.5 if between 1mV and 10mV."
+            else:
+                return "Ventricular Sensitivity should be a either 0.25mV, 0.5mV, 0.75mV or between 1mV and 10mV."
+        except ValueError:
+            return "Ventricular Sensitivity should be a valid value."
+
+    def validate_vrp(self, value):
+        try:
+            value = float(value)
+            if 150 <= value <= 500:
+                if value % 10 == 0:
+                    return "Valid"
+                else:
+                    return "VRP value should be a multiple of 10 between 150ms and 500ms."
+            else: 
+                return "VRP value should be between 150ms and 500ms."
+        except ValueError:
+            return "VRP value should be a valid value."
+
+    def validate_hysteresis(self, value):
+        try:
+            value = str(value)
+            if value=="OFF" or value == "off" or value == "Off":
+                return "Valid"
+            elif value=="LRL" or value == "lrl":
+                return "Valid"
+            else:
+                return "Hysteresis should be either OFF or LRL."
+        except ValueError:
+            return "Hysteresis should be a valid input."
+        
+    def validate_rate_smoothing(self, value):
+        try:
+            value = int(value)
+            if 0 <= value <= 21 or value == 25:
+                if value % 3 == 0:
+                    return "Valid"
+                else:
+                    return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
+            else:
+                return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
+        except ValueError:
+            return "Rate smoothing should be a valid percentage."
 
     def update_parameter_value(self, entry, param):
         value = entry.get()
         # Perform validation for each parameter here if needed
         if param == "Lower Rate Limit":
-            if self.validate_lower_rate_limit(value) == "True":
+            if self.validate_lower_rate_limit(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = "" # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_lower_rate_limit(value)
+
+        elif param == "Upper Rate Limit":
+            if self.validate_upper_rate_limit(value) == "Valid":
                 self.parameter_values[param] = float(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
-                self.error_labels[param]["text"] = self.validate_lower_rate_limit(value)
+                self.error_labels[param]["text"] = self.validate_upper_rate_limit(value)
+
+        elif param == "Atrial Amplitude":
+            if self.validate_atrial_amplitude(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_atrial_amplitude(value)
+
+        elif param == "Atrial Pulse Width":
+            if self.validate_atrial_pulse_width(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_atrial_pulse_width(value)
+
+        elif param == "Ventricular Amplitude":
+            if self.validate_ventricular_amplitude(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_ventricular_amplitude(value)
+
+        elif param == "Ventricular Pulse Width":
+            if self.validate_ventricular_pulse_width(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_ventricular_pulse_width(value)
+
+        elif param == "Atrial Sensitivity":
+            if self.validate_atrial_sensitivity(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_atrial_sensitivity(value)
+
+        elif param == "ARP":
+            if self.validate_arp(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_arp(value)
+
+        elif param == "PVARP":
+            if self.validate_pvarp(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_pvarp(value)
+
+        elif param == "Ventricular Sensitivity":
+            if self.validate_ventricular_sensitivity(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_ventricular_sensitivity(value)
+
+        elif param == "VRP":
+            if self.validate_vrp(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_vrp(value)
+
+        elif param == "Hysteresis":
+            if self.validate_hysteresis(value) == "Valid":
+                self.parameter_values[param] = (value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_hysteresis(value)
+
+        elif param == "Rate Smoothing":
+            if self.validate_rate_smoothing(value) == "Valid":
+                self.parameter_values[param] = int(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.validate_rate_smoothing(value)
+        
         else:
             try:
                 value = float(value)
@@ -128,6 +390,7 @@ class ModeSel:
                 self.error_labels[param]["text"] = ""  # Clear the error message
             except ValueError:
                 pass
+
 
     def store_parameter_values(self):
     # Load existing JSON data

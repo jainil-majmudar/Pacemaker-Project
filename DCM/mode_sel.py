@@ -17,6 +17,9 @@ class ModeSel:
         next_button = tk.Button(root, text="Next", command=lambda: self.render(self.mode_var.get()))
         next_button.place(x=400, y=30)
 
+        display_data_button = tk.Button(root, text = "Display Existing Data", command=lambda :self.main.route(self.main.display_frame))
+        display_data_button.place(x=700, y=30)
+
         self.back_button = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
         self.back_button.place(x=1000, y=20)
 
@@ -43,7 +46,7 @@ class ModeSel:
             "ARP": 250,
             "VRP": 320,
             "PVARP": 250,
-            "Hysteresis": 'OFF',
+            "Hysteresis":0,
             "Rate Smoothing": 0
         }
 
@@ -64,7 +67,7 @@ class ModeSel:
             parameters = self.mode_parameters[mode]
             row = 70  # Adjust the starting Y position
             for param in parameters:
-                label = tk.Label(self.root, text=param)
+                label = tk.Label(self.root, text=param, bg="#F5E8B7")
                 label.place(x=100, y=row)
                 entry = tk.Entry(self.root)
                 entry.place(x=250, y=row)
@@ -195,12 +198,10 @@ class ModeSel:
 
     def validate_hysteresis(self, value):
         try:
-            if value == "OFF" or value == "Off":
-                return "Valid"
             value = float(value)
             if 0 <= value <= 175:
                 if value==0:
-                    return "OFF"
+                    return "Valid"
                 elif 30 <= value <= 50:
                     if value % 5 == 0:
                         return "Valid"

@@ -2,7 +2,9 @@ import tkinter as tk
 from user_manager import UserManager
 from pacemaker_interface import PacemakerInterface
 from mode_sel import ModeSel
+from display import Display
 from PIL import ImageTk, Image
+
 
 class SimpleLoginApp(tk.Tk):
     def __init__(self):
@@ -24,6 +26,8 @@ class SimpleLoginApp(tk.Tk):
         self.mode_sel = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
 
         self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
+
+        self.display_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
         
 
         # Load and resize the image
@@ -94,6 +98,7 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame.pack_forget()
         self.pacemaker_sel.pack_forget()
         self.mode_sel.pack_forget()
+        self.display_frame.pack_forget()
         target_frame.pack()
 
 if __name__ == "__main__":
@@ -101,7 +106,9 @@ if __name__ == "__main__":
     user_manager = UserManager("DCM/DataStorage/user_data.json", app)
     pacemaker_interface = PacemakerInterface(app.pacemaker_sel, app)
     mode_selection = ModeSel(app.mode_sel,app)
+    display_data = Display(app.display_frame,app)
     app.mode_selection = mode_selection
     app.pacemaker_interface = pacemaker_interface
     app.user_manager = user_manager  # Set the UserManager instance in your main app
+    app.display_data = display_data
     app.mainloop()

@@ -136,7 +136,7 @@ class ModeSel:
                 if value % 0.1 == 0:
                     return "Valid"
                 else:
-                    return "Atrial Amplitude should be a multiple of 0.1 if between 0.5V and 3.2V.", value, value%(0.1)
+                    return "Atrial Amplitude should be a multiple of 0.1 if between 0.5V and 3.2V."
             elif 3.5 <= value <= 7.0:
                 if value % 0.5 == 0:
                     return "Valid"

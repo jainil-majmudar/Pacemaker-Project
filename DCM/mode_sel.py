@@ -208,7 +208,7 @@ class ModeSel:
         try:
             value = float(value)
             if 0 <= value <= 175:
-                if value==0:
+                if value==25 or value==0:
                     return "Valid"
                 elif 30 <= value <= 50:
                     if value % 5 == 0:

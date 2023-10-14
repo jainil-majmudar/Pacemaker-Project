@@ -44,6 +44,8 @@ class PacemakerInterface:
             json.dump(data, file)
 
     def submit(self, entry):
+        if entry.isspace():
+            return messagebox.showerror("Error", "Please enter your Pacemaker in")
         if self.prev_pacemaker != entry:
             result = messagebox.askquestion("Note!", "The pacemaker entered is different than the last one connected. Is this okay?")
             if result == 'yes':

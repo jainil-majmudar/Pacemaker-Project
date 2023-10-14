@@ -351,8 +351,14 @@ class ModeSel:
     # Load existing JSON data
         try:
             with open("DCM/DataStorage/pacemaker_data.json", "r") as file:
-                json_data = json.load(file)
+                try:
+                    json_data = json.load(file)
+                except json.decoder.JSONDecodeError:
+                    # Handle the case of an empty JSON file
+                    json_data = {}
         except FileNotFoundError:
+            json_data = {}
+        if not json_data:
             json_data = {}
 
         # Get the selected pacemaker and mode

@@ -85,6 +85,8 @@ class SimpleLoginApp(tk.Tk):
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
+        self.password_entry.delete(0,'end')
+        self.username_entry.delete(0,'end')
         user_manager.login_user(username,password)
     
     
@@ -92,7 +94,11 @@ class SimpleLoginApp(tk.Tk):
         username = self.register_username_entry.get()
         password = self.register_password_entry.get()
         confirm = self.confirm_password_entry.get()
+        self.confirm_password_entry.delete(0,'end')
+        self.register_password_entry.delete(0,'end')
+        self.register_username_entry.delete(0,'end')
         user_manager.register_user(username,password,confirm)
+        
 
 
     def route(self, target_frame):
@@ -103,6 +109,12 @@ class SimpleLoginApp(tk.Tk):
         self.mode_sel.pack_forget()
         self.display_frame.pack_forget()
         self.egram_frame.pack_forget()
+        self.confirm_password_entry.delete(0,'end')
+        self.register_password_entry.delete(0,'end')
+        self.register_username_entry.delete(0,'end')
+        self.password_entry.delete(0,'end')
+        self.username_entry.delete(0,'end')
+        self.pacemaker_interface.pacemaker_entry.delete(0, 'end')
         target_frame.pack()
 
 if __name__ == "__main__":

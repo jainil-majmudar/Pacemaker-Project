@@ -102,6 +102,7 @@ class SimpleLoginApp(tk.Tk):
         self.pacemaker_sel.pack_forget()
         self.mode_sel.pack_forget()
         self.display_frame.pack_forget()
+        self.egram_frame.pack_forget()
         target_frame.pack()
 
 if __name__ == "__main__":

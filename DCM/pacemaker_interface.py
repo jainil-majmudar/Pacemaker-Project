@@ -9,23 +9,23 @@ class PacemakerInterface:
 
         # Load the previously selected pacemaker from a file
         self.prev_pacemaker = self.load_previous_pacemaker()
-        self.previous_pacemaker_label = tk.Label(root, text=f"Previous Pacemaker Connected: {self.prev_pacemaker}", bg='#F5E8B7')
+        self.previous_pacemaker_label = tk.Label(root, text=f"Previous Pacemaker Connected: {self.prev_pacemaker}",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.previous_pacemaker_label.place(x=100, y=50)
 
         # Create and configure the pacemaker interface widgets
-        self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To", bg='#F5E8B7')
+        self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.pacemaker_label.place(x=100, y=100)
         self.pacemaker_entry = tk.Entry(root, width=46)
-        self.pacemaker_entry.place(x=300, y=100)
+        self.pacemaker_entry.place(x=325, y=100)
 
-        self.connection_label = tk.Label(root, text="Communication Established: No", bg='#F5E8B7')
+        self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.connection_label.place(x=100, y=500)
 
-        self.submit_button = tk.Button(root, text="Submit", command=lambda: self.submit(self.pacemaker_entry.get()))
-        self.submit_button.place(x=600, y=100)
+        self.submit_button = tk.Button(root, text="Submit", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda: self.submit(self.pacemaker_entry.get()))
+        self.submit_button.place(x=625, y=100)
 
-        self.back_button = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
-        self.back_button.place(x=1000, y=20)
+        self.log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
+        self.log_out.place(x=1000, y=30)
 
         # Place the widgets in the interface
         self.root.pack()

@@ -8,23 +8,28 @@ class ModeSel:
         self.main = main_app
         self.error_labels = {}
 
-        self.mode_label = tk.Label(root, text="Select Mode")
+        self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
         self.mode_var = tk.StringVar()
         modes = ["AOO", "VOO", "AAI", "VVI"]
         mode_dropdown = tk.OptionMenu(root, self.mode_var, *modes)
-        mode_dropdown.place(x=200, y=30)
-        next_button = tk.Button(root, text="Next", command=lambda: self.render(self.mode_var.get()))
-        next_button.place(x=400, y=30)
+        mode_dropdown.config(bg="blue", fg="white")
+        mode_dropdown["menu"].config(bg="blue", fg = 'white')
+        mode_dropdown.place(x=100, y=60)
+        next_button = tk.Button(root, text="Next", font=("Inter", 10, 'bold'), fg='white', bg='blue', cursor='hand2', command=lambda: self.render(self.mode_var.get()))
+        next_button.place(x=200, y=60)
 
-        display_data_button = tk.Button(root, text = "Display Existing Data", command=lambda :self.main.route(self.main.display_frame))
-        display_data_button.place(x=700, y=30)
+        display_data_button = tk.Button(root, text = "Display Existing Data", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda :self.main.route(self.main.display_frame))
+        display_data_button.place(x=625, y=30)
 
-        egram_button = tk.Button(root,text = "View Egram Data", command=lambda :self.main.route(self.main.egram_frame))
+        egram_button = tk.Button(root,text = "View Egram Data", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda :self.main.route(self.main.egram_frame))
         egram_button.place(x=500,y=30)
 
-        self.back_button = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
-        self.back_button.place(x=1000, y=20)
+        self.log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
+        self.log_out.place(x=1000, y=30)
+
+        self.back_button = tk.Button(root, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=lambda: self.main.route(self.main.pacemaker_sel))
+        self.back_button.place(x=900, y=30)
 
         # Create a dictionary to map modes to their parameters
         self.mode_parameters = {
@@ -68,7 +73,7 @@ class ModeSel:
 
         if mode in self.mode_parameters:
             parameters = self.mode_parameters[mode]
-            row = 70  # Adjust the starting Y position
+            row = 130  # Adjust the starting Y position
             for param in parameters:
                 label = tk.Label(self.root, text=param, bg="#F5E8B7")
                 label.place(x=100, y=row)
@@ -138,10 +143,10 @@ class ModeSel:
         try:
             value = float(value)
             if value==0:
-                return "OFF"
+                return "Valid"
             if value==0.5 or value==0.6 or value==0.7:
                 return "Valid"
-            elif 0.5 <= value <= 3.2:
+            elif 0.7 <= value <= 3.2:
                 if value % 0.1 == 0:
                     return "Valid"
                 else:
@@ -399,13 +404,13 @@ class ModeSel:
         # Replace the comments below with the actual validation logic for each parameter
         for param, entry in zip(self.mode_parameters[self.mode_var.get()], self.current_widgets[1::2]):  # Assumes the order of widgets in current_widgets
             value = entry.get()
-            error = self.validate_parameter(param, value)
+            error = self.validate_parameter_val(param, value)
             if error != "Valid":
                 validation_errors[param] = error
 
         return validation_errors
 
-    def validate_parameter(self, param, value):
+    def validate_parameter_val(self, param, value):
         # Validation logic for each parameter
         if param == "Lower Rate Limit":
             return self.validate_lower_rate_limit(value)

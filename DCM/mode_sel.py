@@ -7,6 +7,7 @@ class ModeSel:
         self.root = root
         self.main = main_app
         self.error_labels = {}
+        self.selected_mode = None 
 
         self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
@@ -95,6 +96,8 @@ class ModeSel:
 
         # Update parameter_values with the selected pacemaker
         self.parameter_values['Pacemaker'] = chosen_pacemaker
+
+        self.selected_mode = mode  # Set the selected mode
 
         submit_button = tk.Button(self.root, text="Submit Parameters", command=self.show_parameter_values)
         submit_button.place(x=250, y=row)
@@ -395,26 +398,30 @@ class ModeSel:
         print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
 
     def show_parameter_values(self):
-        # Check for validation errors
-        validation_errors = self.validate_parameters()
+        if self.selected_mode is not None:
+            # Check for validation errors
+            validation_errors = self.validate_parameters()
 
-        if validation_errors:
-            error_message = "Validation Errors:\n"
-            for param, error in validation_errors.items():
-                error_message += f"{param}: {error}\n"
+            if validation_errors:
+                error_message = "Validation Errors:\n"
+                for param, error in validation_errors.items():
+                    error_message += f"{param}: {error}\n"
 
-            messagebox.showerror("Validation Errors", error_message)
+                messagebox.showerror("Validation Errors", error_message)
+            else:
+                 # Update parameter_values with the selected pacemaker
+                self.parameter_values['Pacemaker'] = self.pacemaker
+                self.store_parameter_values()
+
+                # Filter the parameter_values dictionary to include only the parameters for the selected mode
+                selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[self.selected_mode]}
+
+                print("Parameter values:", selected_mode_params)
+                messagebox.showinfo("Success!", "Your data has been submitted")
+                # You can now use the parameter values as needed
         else:
-             # Update parameter_values with the selected pacemaker
-            self.parameter_values['Pacemaker'] = self.pacemaker
-            self.store_parameter_values()
+            messagebox.showwarning("No Mode Selected", "Please select a mode and press 'Next' before submitting.")
 
-            # Filter the parameter_values dictionary to include only the parameters for the selected mode
-            selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[self.mode_var.get()]}
-
-            print("Parameter values:", selected_mode_params)
-            messagebox.showinfo("Success!", "Your data has submitted")
-            # You can now use the parameter values as needed
 
     def validate_parameters(self):
         validation_errors = {}

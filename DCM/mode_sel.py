@@ -1,6 +1,7 @@
 import tkinter as tk
 import json
 import tkinter.messagebox as messagebox
+from itertools import zip_longest
 
 class ModeSel:
     def __init__(self, root, main_app):
@@ -11,6 +12,7 @@ class ModeSel:
         self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
         self.mode_var = tk.StringVar()
+        self.current_mode = ""
         modes = ["AOO", "VOO", "AAI", "VVI"]
         mode_dropdown = tk.OptionMenu(root, self.mode_var, *modes)
         mode_dropdown.config(bg="blue", fg="white")
@@ -62,6 +64,7 @@ class ModeSel:
         }
 
     def render(self, mode):
+        self.current_mode = self.mode_var.get()
         chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()
         self.pacemaker = chosen_pacemaker
 
@@ -110,6 +113,7 @@ class ModeSel:
                 if 30 <= value <= 50:
                     if value % 5 == 0:
                         return "Valid"
+                        
                     else:
                         return "Lower Rate Limit should be a multiple of 5 if between 30ppm and 50ppm."
                 elif 50 <= value <= 90:
@@ -147,10 +151,13 @@ class ModeSel:
             value = float(value)
             if value==0:
                 return "Valid"
-            if value==0.5 or value==0.6 or value==0.7:
-                return "Valid"
-            elif 0.7 <= value <= 3.2:
-                if value % 0.1 == 0:
+            elif 0.5<=value<=3.2:
+                list = []
+                temp = 0.5
+                while temp <= 3.3:
+                    list.append(round(temp,1))
+                    temp+=0.1
+                if value in list:
                     return "Valid"
                 else:
                     return "Amplitude should be a multiple of 0.1 if between 0.5V and 3.2V."
@@ -170,10 +177,15 @@ class ModeSel:
             if value==0.05:
                 return "Valid"
             elif 0.1 <= value <= 1.9:
-                if value % 0.1 == 0:
+                list2 = []
+                temp2 = 0.1
+                while temp2 <= 2.0:
+                    list2.append(round(temp2,1))
+                    temp2+=0.1
+                if value in list2:
                     return "Valid"
                 else:
-                    return "Pulse Width should be a multiple of 0.1 if between 0.1ms and 1.9ms"
+                    return "Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
             else:
                 return "Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
         except ValueError:
@@ -366,14 +378,13 @@ class ModeSel:
 
         # Get the selected pacemaker and mode
         selected_pacemaker = self.parameter_values['Pacemaker']
-        selected_mode = self.mode_var.get()
+        selected_mode = self.current_mode
 
         print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
         
         
         # Filter the parameter_values dictionary to include only the parameters for the selected mode
         selected_mode_params = {param: value for param, value in self.current_param_vals if param in self.mode_parameters[selected_mode]}
-
         # Check if there is an entry for the selected pacemaker
         if selected_pacemaker in json_data:
             # Update the existing entry with the new parameter values
@@ -389,20 +400,24 @@ class ModeSel:
         
 
     def show_parameter_values(self):
-        # Check for validation errors
-        validation_errors = self.validate_parameters()
-        self.current_param_vals = zip(self.mode_parameters[self.mode_var.get()], self.current_vals)
+        if self.current_mode!=self.mode_var.get():
+            messagebox.showerror("Error", "Please press next to render before submitting")
+            return
         for widget in self.current_widgets[1::2]:
             val = widget.get()
             self.current_vals.append(val)
+        self.current_param_vals = list(zip_longest(self.mode_parameters[self.current_mode], self.current_vals))
 
+        # Check for validation errors
+        validation_errors = self.validate_parameters()
         if validation_errors:
-            
+
             error_message = "Validation Errors:\n"
             for param, error in validation_errors.items():
                 error_message += f"{param}: {error}\n"
 
             messagebox.showerror("Validation Errors", error_message)
+            self.current_vals = []
 
         else:
              # Update parameter_values with the selected pacemaker
@@ -415,24 +430,22 @@ class ModeSel:
             # selected_mode_params = {param: value for param, value in self.current_param_vals if param in self.mode_parameters[self.mode_var.get()]}
             print("Parameter values:")
             i=0
-            for param in self.mode_parameters[self.mode_var.get()]:
+            for param in self.mode_parameters[self.current_mode]:
                 print(param, ": ", self.current_vals[i])
                 i+=1
             messagebox.showinfo("Success!", "Your data has submitted")
+            self.current_vals = []
             # You can now use the parameter values as needed
 
         
 
     def validate_parameters(self):
         validation_errors = {}
-
         # Replace the comments below with the actual validation logic for each parameter
-        for param, entry in zip(self.mode_parameters[self.mode_var.get()], self.current_widgets[1::2]):  # Assumes the order of widgets in current_widgets
-            value = entry.get()
-            error = self.validate_parameter_val(param, value)
+        for param, val in self.current_param_vals:  # Assumes the order of widgets in current_widgets
+            error = self.validate_parameter_val(param, val)
             if error != "Valid":
                 validation_errors[param] = error
-
         return validation_errors
 
     def validate_parameter_val(self, param, value):

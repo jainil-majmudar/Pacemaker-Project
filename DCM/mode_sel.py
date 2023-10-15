@@ -207,8 +207,8 @@ class ModeSel:
     def validate_hysteresis(self, value):
         try:
             value = float(value)
-            if 0 <= value <= 175:
-                if value==25 or value==0:
+            if value==0 or 30 <= value <= 175:
+                if value==0:
                     return "Valid"
                 elif 30 <= value <= 50:
                     if value % 5 == 0:
@@ -227,7 +227,7 @@ class ModeSel:
                         else:
                             return "Hysteresis should be a multiple of 5 between 90ppm and 175ppm."
             else:
-                return "Hysteresis should be between 0ppm and 175ppm."
+                return "Hysteresis should be 0ppm or between 30ppm and 175ppm."
         except ValueError:
             return "Hysteresis should be a valid value."
         

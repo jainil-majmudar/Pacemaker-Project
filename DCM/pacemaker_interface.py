@@ -45,9 +45,9 @@ class PacemakerInterface:
 
     def submit(self, entry):
         if entry.isspace():
-            return messagebox.showerror("Error", "Please enter your Pacemaker in")
+            return messagebox.showerror("Error", "Please enter your Pacemaker")
         elif entry == "":
-            return messagebox.showerror("Error", "Please enter your Pacemaker in")
+            return messagebox.showerror("Error", "Please enter your Pacemaker")
         elif self.prev_pacemaker != entry:
             result = messagebox.askquestion("Note!", "The pacemaker entered is different than the last one connected. Is this okay?")
             if result == 'yes':

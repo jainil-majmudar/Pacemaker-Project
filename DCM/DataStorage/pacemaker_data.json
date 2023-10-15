@@ -1,1 +1,1 @@
-{"2": {"AOO": {"Lower Rate Limit": "120", "Upper Rate Limit": "120", "Atrial Amplitude": "3.5", "Atrial Pulse Width": "0.4"}, "VOO": {"Lower Rate Limit": "60", "Upper Rate Limit": "120", "Ventricular Amplitude": "3.5", "Ventricular Pulse Width": "0.4"}, "AAI": {}, "VVI": {}}}
+{"23": {"VOO": {"Lower Rate Limit": "60", "Upper Rate Limit": "120", "Ventricular Amplitude": "3.5", "Ventricular Pulse Width": "0.4"}}}

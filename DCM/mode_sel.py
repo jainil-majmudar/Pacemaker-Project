@@ -7,6 +7,7 @@ class ModeSel:
         self.root = root
         self.main = main_app
         self.error_labels = {}
+        self.selected_mode = None 
 
         self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
@@ -99,6 +100,8 @@ class ModeSel:
         # Update parameter_values with the selected pacemaker
         self.parameter_values['Pacemaker'] = chosen_pacemaker
 
+        self.selected_mode = mode  # Set the selected mode
+
         submit_button = tk.Button(self.root, text="Submit Parameters", command=self.show_parameter_values)
         submit_button.place(x=250, y=row)
         self.current_widgets.append(submit_button)
@@ -147,10 +150,14 @@ class ModeSel:
             value = float(value)
             if value==0:
                 return "Valid"
-            if value==0.5 or value==0.6 or value==0.7:
-                return "Valid"
-            elif 0.7 <= value <= 3.2:
-                if value % 0.1 == 0:
+            elif 0.5<=value<=3.2:
+                list = []
+                temp = 0.5
+                while temp <= 3.3:
+                    list.append(round(temp,1))
+                    temp+=0.1
+                print(list)
+                if value in list:
                     return "Valid"
                 else:
                     return "Amplitude should be a multiple of 0.1 if between 0.5V and 3.2V."
@@ -170,10 +177,16 @@ class ModeSel:
             if value==0.05:
                 return "Valid"
             elif 0.1 <= value <= 1.9:
-                if value % 0.1 == 0:
+                list2 = []
+                temp2 = 0.1
+                while temp2 <= 2.0:
+                    list2.append(round(temp2,1))
+                    temp2+=0.1
+                print(list2)
+                if value in list2:
                     return "Valid"
                 else:
-                    return "Pulse Width should be a multiple of 0.1 if between 0.1ms and 1.9ms"
+                    return "Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
             else:
                 return "Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
         except ValueError:
@@ -237,11 +250,13 @@ class ModeSel:
     def validate_rate_smoothing(self, value):
         try:
             value = int(value)
-            if 0 <= value <= 21 or value == 25:
+            if 0 <= value <= 21:
                 if value % 3 == 0:
                     return "Valid"
                 else:
                     return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
+            elif value == 25:
+                return "Valid"
             else:
                 return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
         except ValueError:

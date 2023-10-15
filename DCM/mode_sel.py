@@ -44,7 +44,7 @@ class ModeSel:
         self.current_widgets = []  # To store current widgets for mode parameters
         self.current_vals = []
         self.current_param_vals = []
-        self.current_param_vals = []
+        self.current_mode = ""
 
         # Initialize the parameter values dictionary with default values
         self.parameter_values = {

@@ -114,7 +114,6 @@ class SimpleLoginApp(tk.Tk):
         self.register_username_entry.delete(0,'end')
         self.password_entry.delete(0,'end')
         self.username_entry.delete(0,'end')
-        # self.pacemaker_interface.pacemaker_entry.delete(0, 'end')
         target_frame.pack()
 
 if __name__ == "__main__":

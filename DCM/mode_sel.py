@@ -40,6 +40,9 @@ class ModeSel:
         }
 
         self.current_widgets = []  # To store current widgets for mode parameters
+        self.current_vals = []
+        self.current_param_vals = []
+        self.current_param_vals = []
 
         # Initialize the parameter values dictionary with default values
         self.parameter_values = {
@@ -365,8 +368,11 @@ class ModeSel:
         selected_pacemaker = self.parameter_values['Pacemaker']
         selected_mode = self.mode_var.get()
 
+        print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
+        
+        
         # Filter the parameter_values dictionary to include only the parameters for the selected mode
-        selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[selected_mode]}
+        selected_mode_params = {param: value for param, value in self.current_param_vals if param in self.mode_parameters[selected_mode]}
 
         # Check if there is an entry for the selected pacemaker
         if selected_pacemaker in json_data:
@@ -380,29 +386,42 @@ class ModeSel:
         with open("DCM/DataStorage/pacemaker_data.json", "w") as file:
             json.dump(json_data, file)
 
-        print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
+        
 
     def show_parameter_values(self):
         # Check for validation errors
         validation_errors = self.validate_parameters()
+        self.current_param_vals = zip(self.mode_parameters[self.mode_var.get()], self.current_vals)
+        for widget in self.current_widgets[1::2]:
+            val = widget.get()
+            self.current_vals.append(val)
 
         if validation_errors:
+            
             error_message = "Validation Errors:\n"
             for param, error in validation_errors.items():
                 error_message += f"{param}: {error}\n"
 
             messagebox.showerror("Validation Errors", error_message)
+
         else:
              # Update parameter_values with the selected pacemaker
-            self.parameter_values['Pacemaker'] = self.pacemaker
             self.store_parameter_values()
+            self.parameter_values['Pacemaker'] = self.pacemaker
+            
 
+            
             # Filter the parameter_values dictionary to include only the parameters for the selected mode
-            selected_mode_params = {param: value for param, value in self.parameter_values.items() if param in self.mode_parameters[self.mode_var.get()]}
-
-            print("Parameter values:", selected_mode_params)
+            # selected_mode_params = {param: value for param, value in self.current_param_vals if param in self.mode_parameters[self.mode_var.get()]}
+            print("Parameter values:")
+            i=0
+            for param in self.mode_parameters[self.mode_var.get()]:
+                print(param, ": ", self.current_vals[i])
+                i+=1
             messagebox.showinfo("Success!", "Your data has submitted")
             # You can now use the parameter values as needed
+
+        
 
     def validate_parameters(self):
         validation_errors = {}

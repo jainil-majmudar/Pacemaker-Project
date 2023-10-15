@@ -380,7 +380,7 @@ class ModeSel:
         selected_pacemaker = self.parameter_values['Pacemaker']
         selected_mode = self.current_mode
 
-        print(f"Stored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
+        print(f"\n--------------------------------\nStored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
         
         
         # Filter the parameter_values dictionary to include only the parameters for the selected mode
@@ -428,10 +428,10 @@ class ModeSel:
             
             # Filter the parameter_values dictionary to include only the parameters for the selected mode
             # selected_mode_params = {param: value for param, value in self.current_param_vals if param in self.mode_parameters[self.mode_var.get()]}
-            print("Parameter values:")
+            print("--------Parameter values--------")
             i=0
             for param in self.mode_parameters[self.current_mode]:
-                print(param, ": ", self.current_vals[i])
+                print(param, ":", self.current_vals[i])
                 i+=1
             messagebox.showinfo("Success!", "Your data has submitted")
             self.current_vals = []

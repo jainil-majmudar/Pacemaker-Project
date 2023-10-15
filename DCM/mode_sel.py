@@ -234,11 +234,13 @@ class ModeSel:
     def validate_rate_smoothing(self, value):
         try:
             value = int(value)
-            if 0 <= value <= 21 or value == 25:
+            if 0 <= value <= 21:
                 if value % 3 == 0:
                     return "Valid"
                 else:
                     return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
+            elif value == 25:
+                return "Valid"
             else:
                 return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
         except ValueError:

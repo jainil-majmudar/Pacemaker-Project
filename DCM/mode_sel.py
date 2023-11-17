@@ -21,7 +21,7 @@ class ModeSel:
         next_button = tk.Button(root, text="Next", font=("Inter", 10, 'bold'), fg='white', bg='blue', cursor='hand2', command=lambda: self.render(self.mode_var.get()))
         next_button.place(x=200, y=60)
 
-        display_data_button = tk.Button(root, text = "Display Existing Data", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda :self.main.route(self.main.display_frame))
+        display_data_button = tk.Button(root, text = "Display Existing Data", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda :self.display())
         display_data_button.place(x=625, y=30)
 
         egram_button = tk.Button(root,text = "View Egram Data", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda :self.main.route(self.main.egram_frame))
@@ -62,6 +62,9 @@ class ModeSel:
             "Hysteresis":0,
             "Rate Smoothing": 0
         }
+
+    def display(self):
+        self.main.display_data.display()
 
     def render(self, mode):
         self.current_mode = self.mode_var.get()
@@ -380,22 +383,30 @@ class ModeSel:
         selected_pacemaker = self.parameter_values['Pacemaker']
         selected_mode = self.current_mode
 
-        print(f"\n--------------------------------\nStored parameter values for pacemaker '{selected_pacemaker}' for the selected mode '{selected_mode}'.")
+        username = self.main.username  # Assuming the user module has a username variable
         
-        
+        print(f"\n--------------------------------\nStored parameter values for the user '{username}' on the '{selected_pacemaker}' pacemaker, for the selected mode '{selected_mode}'.")
+
         # Filter the parameter_values dictionary to include only the parameters for the selected mode
         selected_mode_params = {param: value for param, value in self.current_param_vals if param in self.mode_parameters[selected_mode]}
+        
         # Check if there is an entry for the selected pacemaker
-        if selected_pacemaker in json_data:
-            # Update the existing entry with the new parameter values
-            json_data[selected_pacemaker][selected_mode] = selected_mode_params
+        
+        if username in json_data:
+            if selected_pacemaker in json_data[username]:
+                # Update the existing entry with the new parameter values
+                json_data[username][selected_pacemaker][selected_mode] = selected_mode_params
+            else:
+                # Create a new entry for the selected pacemaker
+                json_data[username][selected_pacemaker] = {selected_mode: selected_mode_params}
         else:
-            # Create a new entry for the selected pacemaker
-            json_data[selected_pacemaker] = {selected_mode: selected_mode_params}
+            # Create a new entry for the username and pacemaker
+            json_data[username] = {selected_pacemaker: {selected_mode: selected_mode_params}}
 
         # Save the updated JSON data back to the file
         with open("DCM/DataStorage/pacemaker_data.json", "w") as file:
             json.dump(json_data, file)
+
 
         
 

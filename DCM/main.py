@@ -15,6 +15,7 @@ class SimpleLoginApp(tk.Tk):
         self.geometry('1100x600')
         self.minsize(500, 250)
         self.resizable(False,False)
+        self.username = ""
 
         # Create Frames
         bgColor = '#AED2FF'
@@ -29,8 +30,11 @@ class SimpleLoginApp(tk.Tk):
         self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
 
         self.display_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+        self.no_data_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
 
         self.egram_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+
+        
         
 
         # Load and resize the image
@@ -83,11 +87,12 @@ class SimpleLoginApp(tk.Tk):
         
 
     def login(self):
-        username = self.username_entry.get()
+        self.username = self.username_entry.get()
         password = self.password_entry.get()
         self.password_entry.delete(0,'end')
         self.username_entry.delete(0,'end')
-        user_manager.login_user(username,password)
+        user_manager.login_user(self.username,password)
+        
     
     
     def register(self):
@@ -108,6 +113,7 @@ class SimpleLoginApp(tk.Tk):
         self.pacemaker_sel.pack_forget()
         self.mode_sel.pack_forget()
         self.display_frame.pack_forget()
+        self.no_data_frame.pack_forget()
         self.egram_frame.pack_forget()
         self.confirm_password_entry.delete(0,'end')
         self.register_password_entry.delete(0,'end')
@@ -121,7 +127,7 @@ if __name__ == "__main__":
     user_manager = UserManager("DCM/DataStorage/user_data.json", app)
     pacemaker_interface = PacemakerInterface(app.pacemaker_sel, app)
     mode_selection = ModeSel(app.mode_sel,app)
-    display_data = Display(app.display_frame,app)
+    display_data = Display(app.display_frame,app.no_data_frame, app)
     egram_data = Egram(app.egram_frame,app)
     app.mode_selection = mode_selection
     app.pacemaker_interface = pacemaker_interface

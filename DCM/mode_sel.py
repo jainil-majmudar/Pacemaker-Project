@@ -13,11 +13,11 @@ class ModeSel:
         self.mode_label.place(x=100, y=30)
         self.mode_var = tk.StringVar()
         self.current_mode = ""
-        modes = ["AOO", "VOO", "AAI", "VVI"]
-        mode_dropdown = tk.OptionMenu(root, self.mode_var, *modes)
-        mode_dropdown.config(bg="blue", fg="white")
-        mode_dropdown["menu"].config(bg="blue", fg = 'white')
-        mode_dropdown.place(x=100, y=60)
+        self.modes = ["AOO", "VOO", "AAI", "VVI"]
+        self.mode_dropdown = tk.OptionMenu(root, self.mode_var, *self.modes)
+        self.mode_dropdown.config(bg="blue", fg="white")
+        self.mode_dropdown["menu"].config(bg="blue", fg = 'white')
+        self.mode_dropdown.place(x=100, y=60)
         next_button = tk.Button(root, text="Next", font=("Inter", 10, 'bold'), fg='white', bg='blue', cursor='hand2', command=lambda: self.render(self.mode_var.get()))
         next_button.place(x=200, y=60)
 
@@ -70,6 +70,7 @@ class ModeSel:
         self.current_mode = self.mode_var.get()
         chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()
         self.pacemaker = chosen_pacemaker
+
 
         # Clear existing widgets and reset error labels
         for widget in self.current_widgets:

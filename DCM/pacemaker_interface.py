@@ -56,6 +56,9 @@ class PacemakerInterface:
                 self.save_previous_pacemaker(entry)  # Save the new pacemaker
                 messagebox.showinfo("Note!", "Connected successfully")
                 self.main.route(self.main.mode_sel)
+                self.main.mode_selection.mode_var.set("")
+                for widget in self.main.mode_selection.current_widgets:
+                    widget.destroy()
         else:
             messagebox.showinfo("Note!", "Connected successfully")
             self.main.route(self.main.mode_sel)

@@ -50,6 +50,28 @@ class ModeSel:
         self.current_param_vals = []
         self.current_mode = ""
 
+        # Nominal Values dictionary for all parameters in order to reset whenever needed
+        self.nominal_values = {
+            "Lower Rate Limit": 60,
+            "Upper Rate Limit": 120,
+            "Maximum Sensor Rate": 120,
+            "Atrial Amplitude": 5,
+            "Atrial Pulse Width": 1,
+            "Atrial Sensitivity": "",
+            "Ventricular Amplitude": 5,
+            "Ventricular Pulse Width": 1,
+            "Ventricular Sensitivity": "",
+            "ARP": 250,
+            "VRP": 320,
+            "PVARP": 250,
+            "Hysteresis":0,
+            "Rate Smoothing": 0,
+            "Activity Threshold": "med",
+            "Reaction Time": 30,
+            "Response Factor": 8,
+            "Recovery Time": 5
+        }
+
         # Initialize the parameter values dictionary with default values
         self.parameter_values = {
             "Lower Rate Limit": 60,
@@ -101,7 +123,7 @@ class ModeSel:
                 self.current_widgets.extend([label, entry])
 
                 # Set the initial value from the parameter_values dictionary
-                entry.insert(0, str(self.parameter_values[param]))
+                entry.insert(0, str(self.nominal_values[param]))
 
                 # Bind the entry to a function that updates the parameter_values dictionary and displays error messages
                 entry.bind("<FocusOut>", lambda event, entry=entry, param=param: self.update_parameter_value(entry, param))
@@ -118,6 +140,15 @@ class ModeSel:
         submit_button = tk.Button(self.root, text="Submit Parameters", command=self.show_parameter_values)
         submit_button.place(x=250, y=row)
         self.current_widgets.append(submit_button)
+
+    def reset_mode_sel(self):
+        self.main.mode_selection.mode_var.set("")
+        if self.error_labels.items()!=[]:
+            for param, error_label in self.error_labels.items():
+                error_label.config(text="")
+        for widget in self.main.mode_selection.current_widgets:
+            widget.destroy()
+        
 
     def validate_lower_rate_limit(self, value):
         try:

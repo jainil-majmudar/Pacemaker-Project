@@ -280,8 +280,8 @@ class ModeSel:
         
     def activity_threshold(self, value):
         try:
-            value = float(value)
-            if value == "v-low" or value == "low" or value == "med-low" or value == "med" or value == "med-high" or value == "high" or value == "v-high":
+            value_lower = value.lower()
+            if value_lower == "v-low" or value_lower == "low" or value_lower == "med-low" or value_lower == "med" or value_lower == "med-high" or value_lower == "high" or value_lower == "v-high":
                 return "Valid"
             else:
                 return "Activity Threshold needs to be v-low, low, med-low, med, med-high, high or v-high"
@@ -430,7 +430,7 @@ class ModeSel:
 
         elif param == "Activity Threshold":
             if self.activity_threshold(value) == "Valid":
-                self.parameter_values[param] = int(value)
+                self.parameter_values[param] = value
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.activity_threshold(value)

@@ -13,7 +13,7 @@ class ModeSel:
         self.mode_label.place(x=100, y=30)
         self.mode_var = tk.StringVar()
         self.current_mode = ""
-        self.modes = ["AOO", "VOO", "AAI", "VVI"]
+        self.modes = ["AOO", "VOO", "AAI", "VVI", "AOOR", "VOOR", "AAIR", "VVIR"]
         self.mode_dropdown = tk.OptionMenu(root, self.mode_var, *self.modes)
         self.mode_dropdown.config(bg="blue", fg="white")
         self.mode_dropdown["menu"].config(bg="blue", fg = 'white')
@@ -38,7 +38,11 @@ class ModeSel:
             "AOO": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width"],
             "VOO": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width"],
             "AAI": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivity", "ARP", "PVARP", "Hysteresis", "Rate Smoothing"],
-            "VVI": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing"]
+            "VVI": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing"],
+            "AOOR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "VOOR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Ventricular Amplitude", "Ventricular Pulse Width", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "AAIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivity", "ARP", "PVARP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "VVIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"]
         }
 
         self.current_widgets = []  # To store current widgets for mode parameters
@@ -50,17 +54,22 @@ class ModeSel:
         self.parameter_values = {
             "Lower Rate Limit": 60,
             "Upper Rate Limit": 120,
-            "Atrial Amplitude": 3.5,
-            "Atrial Pulse Width": 0.4,
-            "Atrial Sensitivity": 0.75,
-            "Ventricular Amplitude": 3.5,
-            "Ventricular Pulse Width": 0.4,
-            "Ventricular Sensitivity": 2.5,
+            "Maximum Sensor Rate": 120,
+            "Atrial Amplitude": 5,
+            "Atrial Pulse Width": 1,
+            "Atrial Sensitivity": "",
+            "Ventricular Amplitude": 5,
+            "Ventricular Pulse Width": 1,
+            "Ventricular Sensitivity": "",
             "ARP": 250,
             "VRP": 320,
             "PVARP": 250,
             "Hysteresis":0,
-            "Rate Smoothing": 0
+            "Rate Smoothing": 0,
+            "Activity Threshold": "med",
+            "Reaction Time": 30,
+            "Response Factor": 8,
+            "Recovery Time": 5
         }
 
     def display(self):
@@ -124,7 +133,7 @@ class ModeSel:
                     if value.is_integer():
                         return "Valid"
                     else:
-                        return "Lower Rate Limit should be an integer if between 50ppm and 90ppm."
+                        return "Lower Rate Limit should be an integer between 50ppm and 90ppm."
                 else:
                     if 90 <= value <= 175:
                         if value % 5 == 0:
@@ -149,64 +158,68 @@ class ModeSel:
                 return "Upper Rate Limit should be between 50ppm and 175ppm."
         except ValueError:
             return "Upper Rate Limit should be a valid value."
+        
+    def maximum_sensor_rate(self, value):
+        try:
+            value = float(value)
+            if 50 <= value <= 175:
+                if value % 5 == 0:
+                    return "Valid"
+                else:
+                    return "Maximum Sensor Rate should be a multiple of 5 between 50ppm and 175ppm."
+            else:
+                return "Maximum Sensor Rate should be between 50ppm and 175ppm."
+        except ValueError:
+            return "Maximum Sensor Rate should be a valid value."
      
     def validate_amplitude(self, value):
         try:
             value = float(value)
             if value==0:
                 return "Valid"
-            elif 0.5<=value<=3.2:
+            elif 0.1<=value<=5.0:
                 list = []
-                temp = 0.5
-                while temp <= 3.3:
+                temp = 0.1
+                while temp <= 5.1:
                     list.append(round(temp,1))
                     temp+=0.1
                 if value in list:
                     return "Valid"
                 else:
-                    return "Amplitude should be a multiple of 0.1 if between 0.5V and 3.2V."
-            elif 3.5 <= value <= 7.0:
-                if value % 0.5 == 0:
-                    return "Valid"
-                else:
-                    return "Amplitude should be a multiple of 0.5 if between 3.5V and 7.0V."
+                    return "Amplitude should be a multiple of 0.1 if between 0.1V and 5.0V."
             else:
-                return "Amplitude should be 0V or between 0.5V - 3.2V or 3.5V - 7.0V"
+                return "Amplitude should be 0V or between 0.1V - 5.0V"
         except ValueError:
             return "Amplitude should be a valid value."
         
     def validate_pulse_width(self, value):
         try:
             value = float(value)
-            if value==0.05:
-                return "Valid"
-            elif 0.1 <= value <= 1.9:
-                list2 = []
-                temp2 = 0.1
-                while temp2 <= 2.0:
-                    list2.append(round(temp2,1))
-                    temp2+=0.1
-                if value in list2:
+            if 1 <= value <= 30:
+                if value.is_integer():
                     return "Valid"
                 else:
-                    return "Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
+                    return "Pulse Width should be an integer between 1ms and 30ms."
             else:
-                return "Pulse Width should be either 0.05ms or a multiple of 0.1 between 0.1ms and 1.9ms"
+                return "Pulse Width should be a multiple of 1 between 1ms and 30ms"
         except ValueError:
             return "Pulse Width should be a valid value."
 
     def validate_sensitivity(self, value):
         try:
             value = float(value)
-            if value == 0.25 or value == 0.5 or value == 0.75:
-                return "Valid"
-            elif 1.0 <= value <= 10.0:
-                if value % 0.5 == 0:
+            if 0<=value<=5:
+                list = []
+                temp = 0
+                while temp <= 5.1:
+                    list.append(round(temp,1))
+                    temp+=0.1
+                if value in list:
                     return "Valid"
                 else:
-                    return "Sensitivity should be a multiple of 0.5 if between 1mV and 10mV."
+                    return "Sensitivity should be a multiple of 0.1 if between 0V and 5V."
             else:
-                return "Sensitivity should be either 0.25mV, 0.5mV, 0.75mV or between 1mV and 10mV."
+                return "Amplitude should be between 0V - 5V"
         except ValueError:
             return "Sensitivity should be a valid value."
         
@@ -253,15 +266,66 @@ class ModeSel:
     def validate_rate_smoothing(self, value):
         try:
             value = int(value)
-            if 0 <= value <= 21 or value == 25:
+            if 0 <= value <= 21:
                 if value % 3 == 0:
                     return "Valid"
                 else:
-                    return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
+                    return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%"
+            elif value == 25:
+                return "Valid"
             else:
                 return "Rate Smoothing should be one of these values-> 0%, 3%, 6%, 9%, 12%, 15%, 18%, 21%, 25%"
         except ValueError:
             return "Rate smoothing should be a valid percentage."
+        
+    def activity_threshold(self, value):
+        try:
+            value = float(value)
+            if value == "v-low" or value == "low" or value == "med-low" or value == "med" or value == "med-high" or value == "high" or value == "v-high":
+                return "Valid"
+            else:
+                return "Activity Threshold needs to be v-low, low, med-low, med, med-high, high or v-high"
+        except ValueError:
+            return "Activity Threshold needs to be v-low, low, med-low, med, med-high, high or v-high"
+        
+    def reaction_time(self, value):
+        try:
+            value = float(value)
+            if 10 <= value <= 50:
+                if value % 10 == 0:
+                    return "Valid"
+                else:
+                    return "Reaction Time should be a multiple of 10 between 10sec and 50sec."
+            else:
+                return "Reaction Time should be between 10sec and 50sec."
+        except ValueError:
+            return "Reaction Time should be a valid value."
+        
+    def response_factor(self, value):
+        try:
+            value = float(value)
+            if 1 <= value <= 16:
+                if value.is_integer():
+                    return "Valid"
+                else:
+                    return "Response Factor should be an integer between 1 and 16."
+            else:
+                return "Response Factor should be a multiple of 1 between 1 and 16"
+        except ValueError:
+            return "Response Factor should be a valid value."
+        
+    def recovery_time(self, value):
+        try:
+            value = float(value)
+            if 2 <= value <= 16:
+                if value.is_integer():
+                    return "Valid"
+                else:
+                    return "Recovery Time should be an integer between 2min and 16min."
+            else:
+                return "Recovery Time should be a multiple of 1min between 2min and 16min"
+        except ValueError:
+            return "Recovery Time should be a valid value."
 
     def update_parameter_value(self, entry, param):
         value = entry.get()
@@ -279,6 +343,13 @@ class ModeSel:
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_upper_rate_limit(value)
+        
+        elif param == "Maximum Sensor Rate":
+            if self.maximum_sensor_rate(value) == "Valid":
+                self.parameter_values[param] = float(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.maximum_sensor_rate(value)
 
         elif param == "Atrial Amplitude":
             if self.validate_amplitude(value) == "Valid":
@@ -356,6 +427,34 @@ class ModeSel:
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_rate_smoothing(value)
+
+        elif param == "Activity Threshold":
+            if self.activity_threshold(value) == "Valid":
+                self.parameter_values[param] = int(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.activity_threshold(value)
+
+        elif param == "Reaction Time":
+            if self.reaction_time(value) == "Valid":
+                self.parameter_values[param] = int(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.reaction_time(value)
+
+        elif param == "Response Factor":
+            if self.response_factor(value) == "Valid":
+                self.parameter_values[param] = int(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.response_factor(value)
+
+        elif param == "Recovery Time":
+            if self.recovery_time(value) == "Valid":
+                self.parameter_values[param] = int(value)
+                self.error_labels[param]["text"] = ""  # Clear the error message
+            else:
+                self.error_labels[param]["text"] = self.recovery_time(value)
         
         else:
             try:
@@ -466,6 +565,8 @@ class ModeSel:
             return self.validate_lower_rate_limit(value)
         elif param == "Upper Rate Limit":
             return self.validate_upper_rate_limit(value)
+        if param == "Maximum Sensor Rate":
+            return self.maximum_sensor_rate(value)
         elif param == "Atrial Amplitude" or param == "Ventricular Amplitude":
             return self.validate_amplitude(value)
         elif param == "Atrial Pulse Width" or param == "Ventricular Pulse Width":
@@ -478,6 +579,14 @@ class ModeSel:
             return self.validate_hysteresis(value)
         elif param == "Rate Smoothing":
             return self.validate_rate_smoothing(value)
+        elif param == "Activity Threshold":
+            return self.activity_threshold(value)
+        elif param == "Reaction Time":
+            return self.reaction_time(value)
+        elif param == "Response Factor":
+            return self.response_factor(value)
+        elif param == "Recovery Time":
+            return self.recovery_time(value)
 
         # If no specific validation is found for a parameter, return "Valid" by default
         return "Valid"

@@ -142,11 +142,11 @@ class ModeSel:
         self.current_widgets.append(submit_button)
 
     def reset_mode_sel(self):
-        self.main.mode_selection.mode_var.set("")
-        if self.error_labels.items()!=[]:
+        self.mode_var.set("")
+        if self.error_labels.items()!=():
             for error_label in self.error_labels.items():
-                error_label.config(text="")
-        for widget in self.main.mode_selection.current_widgets:
+                error_label[1].config(text="")
+        for widget in self.current_widgets:
             widget.destroy()
         
 

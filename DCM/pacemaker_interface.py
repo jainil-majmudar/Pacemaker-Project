@@ -42,6 +42,7 @@ class PacemakerInterface:
         data = {"previous_pacemaker": pacemaker}
         with open("DCM/DataStorage/previous_pacemaker.json", "w") as file:
             json.dump(data, file)
+    
 
     def submit(self, entry):
         if entry.isspace():

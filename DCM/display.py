@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import json
 import tkinter.messagebox as messagebox
 
@@ -11,7 +12,8 @@ class Display(tk.Tk):
         self.selected_pacemaker = tk.StringVar(root)
 
         self.label4 = tk.Label(root2, text="No Existing Data Found for this user", font=("Inter", 20, 'bold'), fg='red', bg='#F5E8B7')
-        self.label4.place(x=350, y=250)
+        self.label4.place(x=300, y=250)
+        self.current_display = []
 
         
         # Create a label to display parameters
@@ -26,14 +28,42 @@ class Display(tk.Tk):
         self.display_button = tk.Button(root, text="Display", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=self.display_parameters)
         self.display_button.place(x=200, y=60)
 
-        log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
+        log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.log_out)
         log_out.place(x=1000, y=30)
-        back_button = tk.Button(root, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=lambda: self.main.route(self.main.mode_sel))
+        back_button = tk.Button(root, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=self.back_button)
         back_button.place(x=900, y=30)
-        log_out = tk.Button(root2, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
+        log_out = tk.Button(root2, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.log_out)
         log_out.place(x=1000, y=30)
-        back_button = tk.Button(root2, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=lambda: self.main.route(self.main.mode_sel))
+        back_button = tk.Button(root2, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=self.back_button)
         back_button.place(x=900, y=30)
+
+        self.canvas = tk.Canvas(root, bg='#F5E8B7', width=900, height=400, scrollregion=(0, 0, 1000, 400))
+        self.canvas.place(x=100, y=200)
+        self.scroll_frame = tk.Frame(self.canvas, bg='#F5E8B7')
+        self.scroll_frame.place(relx=0, rely=0, anchor='nw')
+        self.scrollbar = ttk.Scrollbar(root, orient='horizontal', command=self.canvas.xview)
+        self.scrollbar.place(x=100, y=580, width=900)
+        self.canvas.config(xscrollcommand=self.scrollbar.set)
+        self.canvas.create_window((0, 0), window=self.scroll_frame, anchor='nw')
+        self.scroll_frame.bind('<Configure>', self.on_frame_configure)
+        
+
+    def on_frame_configure(self,event):
+        self.canvas.config(scrollregion=self.canvas.bbox('all'))
+    
+    def back_button(self):
+        self.main.route(self.main.mode_sel)
+        self.selected_pacemaker.set("")
+        for label in self.current_display:
+            label.destroy()
+        self.main.mode_selection.reset_mode_sel
+
+    def log_out(self):
+        self.main.route(self.main.login_frame)
+        self.selected_pacemaker.set("")
+        for label in self.current_display:
+            label.destroy()
+        self.main.mode_selection.reset_mode_sel
 
     def display(self):
         self.main.route(self.main.display_frame)
@@ -93,5 +123,23 @@ class Display(tk.Tk):
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             parameters = {}  # Set parameters as an empty dictionary if there's an issue with the JSON file
 
-        # Display the parameters in the label
-        self.label3.config(text=f"{parameters}")
+        column = 50  
+        for display in self.current_display:
+            display.destroy()
+        self.current_display = []
+        for mode, params in parameters.items():
+            label_mode = tk.Label(self.scroll_frame, justify="left", text=mode, bg="#F5E8B7")
+            label_mode.grid(row=0, sticky='W', column=column, padx=10)
+
+            row = 1 
+            for param, value in params.items():
+                label_param = tk.Label(self.scroll_frame, justify="left", text=param, bg="#F5E8B7")
+                label_param.grid(row=row, sticky='W', column=column, padx=10)
+
+                label_value = tk.Label(self.scroll_frame, text=value, justify="left", bg="#F5E8B7")
+                label_value.grid(row=row, sticky='W', column=column + 1, padx=10)
+
+                row += 1
+                self.current_display.extend([label_mode, label_param, label_value])
+
+            column += 2

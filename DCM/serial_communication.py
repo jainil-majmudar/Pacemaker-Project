@@ -9,5 +9,4 @@ def check_connection():
         if 'COM3' in port:
             connected = True
             break
-
     return connected

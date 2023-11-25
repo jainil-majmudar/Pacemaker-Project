@@ -9,27 +9,24 @@ class PacemakerInterface:
         self.root = root
         self.main = main_app
 
-        # Load the previously selected pacemaker from a file
-        self.prev_pacemaker = self.load_previous_pacemaker()
-        self.previous_pacemaker_label = tk.Label(root, text=f"Previous Pacemaker Connected: {self.prev_pacemaker}",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
-        self.previous_pacemaker_label.place(x=100, y=50)
 
         self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.connection_label.place(x=100, y=500)
 
-        # Update connection label based on the status returned from check_connection()
-        self.update_connection_label()
+        self.previous_pacemaker_label = tk.Label(self.root, text="",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+
+        # update the previous pacemaker label 
+        self.update_prev_pacemaker_label()
 
         # Schedule to periodically check and update the connection status label
         self.root.after(2000, self.check_and_update_connection)
 
         # Create and configure the pacemaker interface widgets
-        self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.pacemaker_label = tk.Label(root, text="Insert name for Pacemaker", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.pacemaker_label.place(x=100, y=100)
         self.pacemaker_entry = tk.Entry(root, width=46)
         self.pacemaker_entry.place(x=325, y=100)
 
-        
         self.submit_button = tk.Button(root, text="Submit", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda: self.submit(self.pacemaker_entry.get()))
         self.submit_button.place(x=625, y=100)
 
@@ -40,17 +37,31 @@ class PacemakerInterface:
         self.root.pack()
 
     def load_previous_pacemaker(self):
+        username = self.main.username
         try:
             with open("DCM/DataStorage/previous_pacemaker.json", "r") as file:
                 data = json.load(file)
-                return data.get("previous_pacemaker", "None")
+                key = data.get(username, "")
+                return key
         except FileNotFoundError:
             return "None"
 
     def save_previous_pacemaker(self, pacemaker):
-        data = {"previous_pacemaker": pacemaker}
+        username = self.main.username
+        try:
+            with open("DCM/DataStorage/previous_pacemaker.json", "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            return "None"
+        data[username] = pacemaker
+
         with open("DCM/DataStorage/previous_pacemaker.json", "w") as file:
             json.dump(data, file)
+
+    def update_prev_pacemaker_label(self):
+        self.previous_pacemaker_label.destroy()
+        self.previous_pacemaker_label = tk.Label(self.root, text=f"Previous Pacemaker Connected: {self.load_previous_pacemaker()}",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.previous_pacemaker_label.place(x=100, y=50)
     
     def update_connection_label(self):
         connected = serial_communication.check_connection()
@@ -65,15 +76,16 @@ class PacemakerInterface:
         self.root.after(2000, self.check_and_update_connection)
 
     def submit(self, entry):
-        if entry.isspace():
+        if not serial_communication.check_connection():
+
+            return messagebox.showerror("Error", "Please connect your pacemaker or check your pacemaker connection")
+        elif entry.isspace():
             return messagebox.showerror("Error", "Please enter your Pacemaker")
         elif entry == "":
             return messagebox.showerror("Error", "Please enter your Pacemaker")
-        elif self.prev_pacemaker != entry:
+        elif self.load_previous_pacemaker() != entry:
             result = messagebox.askquestion("Note!", "The pacemaker entered is different than the last one connected. Is this okay?")
             if result == 'yes':
-                self.prev_pacemaker = entry
-                self.previous_pacemaker_label.config(text=f"Previous Pacemaker Connected: {entry}")
                 self.save_previous_pacemaker(entry)  # Save the new pacemaker
                 messagebox.showinfo("Note!", "Connected successfully")
                 self.main.mode_selection.reset_mode_sel()

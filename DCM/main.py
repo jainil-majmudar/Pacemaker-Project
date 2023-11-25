@@ -92,6 +92,7 @@ class SimpleLoginApp(tk.Tk):
         self.password_entry.delete(0,'end')
         self.username_entry.delete(0,'end')
         user_manager.login_user(self.username,password)
+        self.pacemaker_interface.update_prev_pacemaker_label()
         
     
     

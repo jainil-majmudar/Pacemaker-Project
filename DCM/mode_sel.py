@@ -37,11 +37,11 @@ class ModeSel:
         self.mode_parameters = {
             "AOO": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width"],
             "VOO": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width"],
-            "AAI": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivity", "ARP", "PVARP", "Hysteresis", "Rate Smoothing"],
+            "AAI": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivity", "ARP", "Hysteresis", "Rate Smoothing"],
             "VVI": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing"],
             "AOOR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
             "VOOR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Ventricular Amplitude", "Ventricular Pulse Width", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
-            "AAIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivity", "ARP", "PVARP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "AAIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivity", "ARP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
             "VVIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"]
         }
 
@@ -63,7 +63,6 @@ class ModeSel:
             "Ventricular Sensitivity": "",
             "ARP": 250,
             "VRP": 320,
-            "PVARP": 250,
             "Hysteresis":0,
             "Rate Smoothing": 0,
             "Activity Threshold": "med",
@@ -85,7 +84,6 @@ class ModeSel:
             "Ventricular Sensitivity": "",
             "ARP": 250,
             "VRP": 320,
-            "PVARP": 250,
             "Hysteresis":0,
             "Rate Smoothing": 0,
             "Activity Threshold": "med",
@@ -424,13 +422,6 @@ class ModeSel:
             else:
                 self.error_labels[param]["text"] = self.validate_refractory_period(value)
 
-        elif param == "PVARP":
-            if self.validate_refractory_period(value) == "Valid":
-                self.parameter_values[param] = float(value)
-                self.error_labels[param]["text"] = ""  # Clear the error message
-            else:
-                self.error_labels[param]["text"] = self.validate_refractory_period(value)
-
         elif param == "Ventricular Sensitivity":
             if self.validate_sensitivity(value) == "Valid":
                 self.parameter_values[param] = float(value)
@@ -604,7 +595,7 @@ class ModeSel:
             return self.validate_pulse_width(value)
         elif param == "Atrial Sensitivity" or param == "Ventricular Sensitivity":
             return self.validate_sensitivity(value)
-        elif param == "ARP" or param == "PVARP" or param == "VRP":
+        elif param == "ARP" or param == "VRP":
             return self.validate_refractory_period(value)
         elif param == "Hysteresis":
             return self.validate_hysteresis(value)

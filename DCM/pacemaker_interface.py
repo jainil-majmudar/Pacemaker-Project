@@ -1,6 +1,8 @@
 import tkinter as tk
 import json
 import tkinter.messagebox as messagebox
+import serial_communication  # Import your serial_communication module
+
 
 class PacemakerInterface:
     def __init__(self, root, main_app):
@@ -12,15 +14,22 @@ class PacemakerInterface:
         self.previous_pacemaker_label = tk.Label(root, text=f"Previous Pacemaker Connected: {self.prev_pacemaker}",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.previous_pacemaker_label.place(x=100, y=50)
 
+        self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.connection_label.place(x=100, y=500)
+
+        # Update connection label based on the status returned from check_connection()
+        self.update_connection_label()
+
+        # Schedule to periodically check and update the connection status label
+        self.root.after(2000, self.check_and_update_connection)
+
         # Create and configure the pacemaker interface widgets
         self.pacemaker_label = tk.Label(root, text="Pacemaker To Be Connected To", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
         self.pacemaker_label.place(x=100, y=100)
         self.pacemaker_entry = tk.Entry(root, width=46)
         self.pacemaker_entry.place(x=325, y=100)
 
-        self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
-        self.connection_label.place(x=100, y=500)
-
+        
         self.submit_button = tk.Button(root, text="Submit", font=("Inter", 10, 'bold'), fg='white', bg='green', cursor='hand2', command=lambda: self.submit(self.pacemaker_entry.get()))
         self.submit_button.place(x=625, y=100)
 
@@ -43,6 +52,17 @@ class PacemakerInterface:
         with open("DCM/DataStorage/previous_pacemaker.json", "w") as file:
             json.dump(data, file)
     
+    def update_connection_label(self):
+        connected = serial_communication.check_connection()
+        if connected:
+            self.connection_label.config(text="Communication Established: Yes", fg='green')
+        else:
+            self.connection_label.config(text="Communication Established: No", fg='red')
+
+    def check_and_update_connection(self):
+        self.update_connection_label()  # Update the connection label
+        # Schedule to check and update again after 2 seconds
+        self.root.after(2000, self.check_and_update_connection)
 
     def submit(self, entry):
         if entry.isspace():

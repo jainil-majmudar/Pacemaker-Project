@@ -57,10 +57,10 @@ class ModeSel:
             "Upper Rate Limit": 120,
             "Maximum Sensor Rate": 120,
             "Atrial Amplitude": 5.0,
-            "Atrial Pulse Width": 1.0,
+            "Atrial Pulse Width": 1,
             "Atrial Sensitivity": '',
             "Ventricular Amplitude": 5.0,
-            "Ventricular Pulse Width": 1.0,
+            "Ventricular Pulse Width": 1,
             "Ventricular Sensitivity": '',
             "ARP": 250,
             "VRP": 320,
@@ -78,10 +78,10 @@ class ModeSel:
             "Upper Rate Limit": 120,
             "Maximum Sensor Rate": 120,
             "Atrial Amplitude": 5.0,
-            "Atrial Pulse Width": 1.0,
+            "Atrial Pulse Width": 1,
             "Atrial Sensitivity": 0.0,
             "Ventricular Amplitude": 5.0,
-            "Ventricular Pulse Width": 1.0,
+            "Ventricular Pulse Width": 1,
             "Ventricular Sensitivity": 0.0,
             "ARP": 250,
             "VRP": 320,
@@ -390,7 +390,7 @@ class ModeSel:
 
         elif param == "Atrial Pulse Width":
             if self.validate_pulse_width(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_pulse_width(value)
@@ -404,7 +404,7 @@ class ModeSel:
 
         elif param == "Ventricular Pulse Width":
             if self.validate_pulse_width(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_pulse_width(value)
@@ -556,6 +556,9 @@ class ModeSel:
         else:
              # Update parameter_values with the selected pacemaker
             self.store_parameter_values()
+            self.parameter_values['Pacemaker'] = self.pacemaker
+            for entry, param in zip_longest(self.current_widgets[1::2], self.mode_parameters[self.current_mode]):
+                self.update_parameter_value(entry, param)
             self.parameter_values['Pacemaker'] = self.pacemaker
             
 

@@ -22,7 +22,7 @@ def send_parameters(data_to_send):
     
    
     packet = struct.pack(
-    '<BBBBBBffffffHHBBpBBB',
+    '<BBBBBBffBBffHHBBpBBB',
     0,  # rxdata(1)
     0,  # rxdata(2)
     data_to_send['MODE'],

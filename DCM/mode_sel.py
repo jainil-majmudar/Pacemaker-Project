@@ -1,6 +1,7 @@
 import tkinter as tk
 import json
 import tkinter.messagebox as messagebox
+import serial_communication
 from itertools import zip_longest
 
 class ModeSel:
@@ -553,6 +554,51 @@ class ModeSel:
             self.current_vals = []
 
         else:
+            mode = self.current_mode
+            print("Mode is: ",mode)
+            if mode == 'AOO':
+                mapped_mode = 1
+            elif mode == 'VOO':
+                mapped_mode = 2
+            elif mode == 'AAI':
+                mapped_mode = 3
+            elif mode == 'VVI':
+                mapped_mode = 4
+            elif mode == 'AOOR':
+                mapped_mode = 5
+            elif mode == 'VOOR':
+                mapped_mode = 6
+            elif mode == 'AAIR':
+                mapped_mode = 7
+            elif mode == 'VVIR':
+                mapped_mode = 8
+            else:
+                pass
+            
+            print("Mapped Mode is: ",mapped_mode)
+            data_to_send = {
+                "MODE": mapped_mode,
+                "LRL": self.parameter_values['Lower Rate Limit'],
+                "URL": self.parameter_values['Upper Rate Limit'],
+                "MSR": self.parameter_values['Maximum Sensor Rate'],
+                "A_AMPLITUDE": self.parameter_values['Atrial Amplitude'],
+                "V_AMPLITUDE": self.parameter_values['Ventricular Amplitude'],
+                "A_WIDTH": self.parameter_values['Atrial Pulse Width'],
+                "V_WIDTH": self.parameter_values['Ventricular Pulse Width'],
+                "A_SENSITIVITY": self.parameter_values['Atrial Sensitivity'],
+                "V_SENSITIVITY": self.parameter_values['Ventricular Sensitivity'],
+                "VRP": self.parameter_values['VRP'],
+                "ARP": self.parameter_values['ARP'],
+                "HRL": self.parameter_values['Hysteresis'],
+                "RATE_SMOOTH": self.parameter_values['Rate Smoothing'],
+                "ACTIVITY_THRESH": self.parameter_values['Activity Threshold'],
+                "REACT_TIME": self.parameter_values['Reaction Time'],
+                "RESPONSE_FAC": self.parameter_values['Response Factor'],
+                "RECOVERY_TIME": self.parameter_values['Recovery Time']
+            }
+            print(data_to_send)
+           
+            #serial_communication.send_parameters(data_to_send)
              # Update parameter_values with the selected pacemaker
             self.store_parameter_values()
             self.parameter_values['Pacemaker'] = self.pacemaker

@@ -362,21 +362,21 @@ class ModeSel:
         # Perform validation for each parameter here if needed
         if param == "Lower Rate Limit":
             if self.validate_lower_rate_limit(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = "" # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_lower_rate_limit(value)
 
         elif param == "Upper Rate Limit":
             if self.validate_upper_rate_limit(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_upper_rate_limit(value)
         
         elif param == "Maximum Sensor Rate":
             if self.maximum_sensor_rate(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.maximum_sensor_rate(value)
@@ -439,7 +439,7 @@ class ModeSel:
 
         elif param == "Hysteresis":
             if self.validate_hysteresis(value) == "Valid":
-                self.parameter_values[param] = (value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_hysteresis(value)

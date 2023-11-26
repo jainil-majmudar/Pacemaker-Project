@@ -56,12 +56,12 @@ class ModeSel:
             "Lower Rate Limit": 60,
             "Upper Rate Limit": 120,
             "Maximum Sensor Rate": 120,
-            "Atrial Amplitude": 5,
-            "Atrial Pulse Width": 1,
-            "Atrial Sensitivity": "",
-            "Ventricular Amplitude": 5,
-            "Ventricular Pulse Width": 1,
-            "Ventricular Sensitivity": "",
+            "Atrial Amplitude": 5.0,
+            "Atrial Pulse Width": 1.0,
+            "Atrial Sensitivity": '',
+            "Ventricular Amplitude": 5.0,
+            "Ventricular Pulse Width": 1.0,
+            "Ventricular Sensitivity": '',
             "ARP": 250,
             "VRP": 320,
             "Hysteresis":0,
@@ -77,12 +77,12 @@ class ModeSel:
             "Lower Rate Limit": 60,
             "Upper Rate Limit": 120,
             "Maximum Sensor Rate": 120,
-            "Atrial Amplitude": 5,
-            "Atrial Pulse Width": 1,
-            "Atrial Sensitivity": "",
-            "Ventricular Amplitude": 5,
-            "Ventricular Pulse Width": 1,
-            "Ventricular Sensitivity": "",
+            "Atrial Amplitude": 5.0,
+            "Atrial Pulse Width": 1.0,
+            "Atrial Sensitivity": 0.0,
+            "Ventricular Amplitude": 5.0,
+            "Ventricular Pulse Width": 1.0,
+            "Ventricular Sensitivity": 0.0,
             "ARP": 250,
             "VRP": 320,
             "Hysteresis":0,
@@ -418,7 +418,7 @@ class ModeSel:
 
         elif param == "ARP":
             if self.validate_refractory_period(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = (value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_refractory_period(value)
@@ -432,7 +432,7 @@ class ModeSel:
 
         elif param == "VRP":
             if self.validate_refractory_period(value) == "Valid":
-                self.parameter_values[param] = float(value)
+                self.parameter_values[param] = (value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_refractory_period(value)
@@ -554,6 +554,11 @@ class ModeSel:
             self.current_vals = []
 
         else:
+             # Update parameter_values with the selected pacemaker
+            self.store_parameter_values()
+            self.parameter_values['Pacemaker'] = self.pacemaker
+            
+
             mode = self.current_mode
             print("Mode is: ",mode)
             if mode == 'AOO':
@@ -598,10 +603,7 @@ class ModeSel:
             }
             print(data_to_send)
            
-            #serial_communication.send_parameters(data_to_send)
-             # Update parameter_values with the selected pacemaker
-            self.store_parameter_values()
-            self.parameter_values['Pacemaker'] = self.pacemaker
+            serial_communication.send_parameters(data_to_send)
             
 
             

@@ -224,7 +224,7 @@ class ModeSel:
         
     def validate_pulse_width(self, value):
         try:
-            value = float(value)
+            value = int(value)
             if 1 <= value <= 30:
                 if value.is_integer():
                     return "Valid"
@@ -559,7 +559,7 @@ class ModeSel:
             self.parameter_values['Pacemaker'] = self.pacemaker
             for entry, param in zip_longest(self.current_widgets[1::2], self.mode_parameters[self.current_mode]):
                 self.update_parameter_value(entry, param)
-            self.parameter_values['Pacemaker'] = self.pacemaker
+           
             
 
             mode = self.current_mode

@@ -18,13 +18,13 @@ def send_parameters(data_to_send):
     ser = serial.Serial('COM3', 115200)  # Update 'COM3' to your port and 115200 to your baud rate
     
     activity_thresh_values = {
-    'v-low': 0,
-    'low': 1,
-    'med-low': 2,
-    'med': 3,
-    'med-high': 4,
-    'high': 5,
-    'v-high': 6
+    'v-low': 1,
+    'low': 2,
+    'med-low': 3,
+    'med': 4,
+    'med-high': 5,
+    'high': 6,
+    'v-high': 7
     }
 
     activity_thresh_value = activity_thresh_values[data_to_send['ACTIVITY_THRESH']]

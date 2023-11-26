@@ -418,7 +418,7 @@ class ModeSel:
 
         elif param == "ARP":
             if self.validate_refractory_period(value) == "Valid":
-                self.parameter_values[param] = (value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_refractory_period(value)
@@ -432,7 +432,7 @@ class ModeSel:
 
         elif param == "VRP":
             if self.validate_refractory_period(value) == "Valid":
-                self.parameter_values[param] = (value)
+                self.parameter_values[param] = int(value)
                 self.error_labels[param]["text"] = ""  # Clear the error message
             else:
                 self.error_labels[param]["text"] = self.validate_refractory_period(value)

@@ -17,12 +17,22 @@ def send_parameters(data_to_send):
     # Establish a serial connection - update the port and baud rate
     ser = serial.Serial('COM3', 115200)  # Update 'COM3' to your port and 115200 to your baud rate
     
-    activity_thresh = data_to_send['ACTIVITY_THRESH'].encode('utf-8')  # Convert the string to bytes
+    activity_thresh_values = {
+    'v-low': 0,
+    'low': 1,
+    'med-low': 2,
+    'med': 3,
+    'med-high': 4,
+    'high': 5,
+    'v-high': 6
+    }
+
+    activity_thresh_value = activity_thresh_values[data_to_send['ACTIVITY_THRESH']]
     # Pack the parameters according to the Simulink array order for bytes
     
    
     packet = struct.pack(
-    '<BBBBBBffBBffHHBBpBBB',
+    '<BBBBBBffBBffHHBBBBBB',
     0,  # rxdata(1)
     0,  # rxdata(2)
     data_to_send['MODE'],
@@ -44,7 +54,7 @@ def send_parameters(data_to_send):
 
     data_to_send['HRL'],
     data_to_send['RATE_SMOOTH'],
-    activity_thresh,
+    activity_thresh_value,
     data_to_send['REACT_TIME'],
     data_to_send['RESPONSE_FAC'],
     data_to_send['RECOVERY_TIME'],

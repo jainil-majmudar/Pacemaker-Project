@@ -606,7 +606,7 @@ class ModeSel:
             }
             print(data_to_send)
            
-            serial_communication.SerialCommunication.send_parameters(data_to_send)
+            serial_communication.send_parameters(data_to_send)
             
 
             

@@ -64,7 +64,7 @@ class PacemakerInterface:
         self.previous_pacemaker_label.place(x=100, y=50)
     
     def update_connection_label(self):
-        connected = serial_communication.SerialCommunication.check_connection()
+        connected = serial_communication.check_connection()
         if connected:
             self.connection_label.config(text="Communication Established: Yes", fg='green')
         else:
@@ -76,7 +76,7 @@ class PacemakerInterface:
         self.root.after(2000, self.check_and_update_connection)
 
     def submit(self, entry):
-        if not serial_communication.SerialCommunication.check_connection():
+        if not serial_communication.check_connection():
 
             return messagebox.showerror("Error", "Please connect your pacemaker or check your pacemaker connection")
         elif entry.isspace():

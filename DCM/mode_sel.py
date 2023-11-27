@@ -224,7 +224,7 @@ class ModeSel:
         
     def validate_pulse_width(self, value):
         try:
-            value = int(value)
+            value = float(value)
             if 1 <= value <= 30:
                 if value.is_integer():
                     return "Valid"

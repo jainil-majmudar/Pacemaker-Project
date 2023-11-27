@@ -54,7 +54,7 @@ def send_parameters(data_to_send):
 
         s0 = b'\x00'
         s1 = b'\x00' 
-        s2 = b'\x01'
+        s2 = struct.pack('B', data_to_send['MODE'])
         s3 = struct.pack('B', data_to_send['LRL'])
         s4 = struct.pack('B', data_to_send['URL'])
         s5 = struct.pack('B', data_to_send['MSR'])

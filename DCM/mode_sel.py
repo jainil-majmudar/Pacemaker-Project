@@ -1,7 +1,7 @@
 import tkinter as tk
 import json
 import tkinter.messagebox as messagebox
-import serial_communication
+from serial_communication import SerialCommunication
 from itertools import zip_longest
 
 class ModeSel:
@@ -9,6 +9,7 @@ class ModeSel:
         self.root = root
         self.main = main_app
         self.error_labels = {}
+        self.serial_comm= SerialCommunication(self.main)
 
         self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
@@ -606,7 +607,7 @@ class ModeSel:
             }
             print(data_to_send)
            
-            serial_communication.send_parameters(data_to_send)
+            self.serial_comm.send_parameters(data_to_send)
             
 
             

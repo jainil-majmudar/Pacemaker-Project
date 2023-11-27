@@ -1,13 +1,14 @@
 import tkinter as tk
 import json
 import tkinter.messagebox as messagebox
-import serial_communication  # Import your serial_communication module
+from serial_communication import SerialCommunication  # Import your serial_communication module
 
 
 class PacemakerInterface:
     def __init__(self, root, main_app):
         self.root = root
         self.main = main_app
+        self.serial_comm = SerialCommunication(self.main)
 
 
         self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
@@ -15,11 +16,9 @@ class PacemakerInterface:
 
         self.previous_pacemaker_label = tk.Label(self.root, text="",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
 
-        # update the previous pacemaker label 
-        self.update_prev_pacemaker_label()
+        self.previous_pacemaker_label = tk.Label(self.root, text=f"Previous Pacemaker Connected: ",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.previous_pacemaker_label.place(x=100, y=50)
 
-        # Schedule to periodically check and update the connection status label
-        self.root.after(2000, self.check_and_update_connection)
 
         # Create and configure the pacemaker interface widgets
         self.pacemaker_label = tk.Label(root, text="Insert name for Pacemaker", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
@@ -41,8 +40,9 @@ class PacemakerInterface:
         try:
             with open("DCM/DataStorage/previous_pacemaker.json", "r") as file:
                 data = json.load(file)
-                key = data.get(username, "")
-                return key
+                if username in data:
+                    key = data[username]
+                    return key
         except FileNotFoundError:
             return "None"
 
@@ -64,7 +64,7 @@ class PacemakerInterface:
         self.previous_pacemaker_label.place(x=100, y=50)
     
     def update_connection_label(self):
-        connected = serial_communication.check_connection()
+        connected = self.serial_comm.check_connection()
         if connected:
             self.connection_label.config(text="Communication Established: Yes", fg='green')
         else:
@@ -73,11 +73,11 @@ class PacemakerInterface:
     def check_and_update_connection(self):
         self.update_connection_label()  # Update the connection label
         # Schedule to check and update again after 2 seconds
-        self.root.after(2000, self.check_and_update_connection)
+        self.root.after(1000, self.check_and_update_connection)
+    
 
     def submit(self, entry):
-        if not serial_communication.check_connection():
-
+        if not self.serial_comm.check_connection():
             return messagebox.showerror("Error", "Please connect your pacemaker or check your pacemaker connection")
         elif entry.isspace():
             return messagebox.showerror("Error", "Please enter your Pacemaker")

@@ -53,7 +53,7 @@ class Egram:
         self.ax_atrial.set_visible(False)
         self.ax_ventricular.set_visible(False)
 
-        self.timer_interval = 1000  # Time interval in milliseconds
+        self.timer_interval = 100  # Time interval in milliseconds
         self.egram_data = {'Atrial': [], 'Ventricular': []}  # Placeholder for Egram data
 
     def render(self, mode):

@@ -43,8 +43,8 @@ class Egram:
         self.mode_dropdown.config(bg="blue", fg="white")
         self.mode_dropdown["menu"].config(bg="blue", fg='white')
         self.mode_dropdown.place(x=100, y=60)
-        next_button = tk.Button(root, text="Next", font=("Inter", 10, 'bold'), fg='white', bg='blue', cursor='hand2', command=lambda: self.render(self.mode_var.get()))
-        next_button.place(x=250, y=60)
+        self.next_button = tk.Button(root, text="Next", font=("Inter", 10, 'bold'), fg='white', bg='blue', cursor='hand2', command=lambda: self.render(self.mode_var.get()))
+        self.next_button.place(x=250, y=60)
 
         self.lines_atrial = []
         self.lines_ventricular = []

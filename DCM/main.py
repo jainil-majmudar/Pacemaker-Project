@@ -4,7 +4,6 @@ from pacemaker_interface import PacemakerInterface
 from mode_sel import ModeSel
 from egram import Egram
 from display import Display
-from serial_communication import SerialCommunication
 from PIL import ImageTk, Image
 
 
@@ -17,6 +16,7 @@ class SimpleLoginApp(tk.Tk):
         self.minsize(500, 250)
         self.resizable(False,False)
         self.username = ""
+        self.port = ""
 
         # Create Frames
         bgColor = '#AED2FF'
@@ -93,8 +93,7 @@ class SimpleLoginApp(tk.Tk):
         self.password_entry.delete(0,'end')
         self.username_entry.delete(0,'end')
         user_manager.login_user(self.username,password)
-        pacemaker_interface.update_prev_pacemaker_label()
-        
+        self.pacemaker_interface.update_prev_pacemaker_label()
         
     
     
@@ -132,11 +131,9 @@ if __name__ == "__main__":
     mode_selection = ModeSel(app.mode_sel,app)
     display_data = Display(app.display_frame,app.no_data_frame, app)
     egram_data = Egram(app.egram_frame,app)
-    serial_communication = SerialCommunication(app)
     app.mode_selection = mode_selection
     app.pacemaker_interface = pacemaker_interface
     app.user_manager = user_manager  # Set the UserManager instance in your main app
     app.display_data = display_data
     app.egram_data = egram_data
-    app.serial_comm = serial_communication
     app.mainloop()

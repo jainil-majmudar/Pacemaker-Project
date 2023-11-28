@@ -139,23 +139,24 @@ class Egram:
 
         if mode == "Atrial":
             self.egram_data['Atrial'].append(new_egram_data)
-            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'])
+            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
         elif mode == "Ventricular":
             self.egram_data['Ventricular'].append(new_egram_data)
-            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'])
+            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
         elif mode == "Atrial + Ventricular":
             # Assuming new_egram_data contains both atrial and ventricular data
             self.egram_data['Atrial'].append(new_egram_data[0])
             self.egram_data['Ventricular'].append(new_egram_data[1])
-            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'])
-            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'])
+            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
+            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
 
         # Schedule the next update after the specified time interval
         self.root.after(self.timer_interval, self.update_egram_data, mode)
 
-    def update_subplot(self, axis, new_data):
+    def update_subplot(self, axis, new_data, plot_title):
         axis.clear()
         axis.plot(new_data, 'b-')  # 'b-' represents a blue line; adjust as needed
+        axis.set_title(plot_title)  # Set title for the subplot
         self.canvas.draw()
         # self.ax_atrial.legend()
         # self.ax_ventricular.legend()

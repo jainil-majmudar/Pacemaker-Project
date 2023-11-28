@@ -73,7 +73,7 @@ class PacemakerInterface:
     def check_and_update_connection(self):
         self.update_connection_label()  # Update the connection label
         # Schedule to check and update again after 2 seconds
-        self.root.after(1000, self.check_and_update_connection)
+        self.root.after(100, self.check_and_update_connection)
     
 
     def submit(self, entry):

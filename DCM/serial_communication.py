@@ -26,7 +26,7 @@ class SerialCommunication:
 
         # Check if 'COM4' port is in the list of available ports
         for prt, desc, hwid in sorted(ports):
-            if "USB VID:PID=1366:1015 SER=000621000000 LOCATION=1-1:x.0" == hwid:
+            if "USB VID:PID=1366:1015 SER=000621000000" == hwid:
                 self.main.port = prt
                 connected = True
                 if username in data:
@@ -50,8 +50,7 @@ class SerialCommunication:
 
 
         # Define the function to establish a serial connection and send parameters
-    def send_parameters(self, data_to_send):
-        print(self.main.port)
+    def send_parameters(self, data_to_send,s0,s1):
         activity_thresh_values = {
         'v-low': 1,
         'low': 2,
@@ -66,8 +65,6 @@ class SerialCommunication:
     
         packet = []
 
-        s0 = b'\x00'
-        s1 = b'\x00' 
         s2 = struct.pack('B', data_to_send['MODE'])
         s3 = struct.pack('B', data_to_send['LRL'])
         s4 = struct.pack('B', data_to_send['URL'])
@@ -105,7 +102,7 @@ class SerialCommunication:
         packet.append(s17)
         
         #Establish Serial Connection
-        ser = serial.Serial(self.main.port ,115200)
+        ser = serial.Serial("COM5",115200)
 
         ser.write(b''.join(packet))
         print('Data has been written: ', packet)
@@ -126,9 +123,13 @@ class SerialCommunication:
         react_time = (struct.unpack('B',ser.read(1)))[0]
         r_factor = (struct.unpack('B',ser.read(1)))[0]
         rec_time = (struct.unpack('B',ser.read(1)))[0]
+        a_signal = (struct.unpack('d',ser.read(8)))[0]
+        v_signal = (struct.unpack('d',ser.read(8)))[0]
         
         received_array = [modeN, lrl, url, msr, a_amplitude, v_amplitude, a_width, v_width, a_sensitivity, v_sensitivity, vrp, arp, activity_thresh, react_time, r_factor, rec_time]
+        egram_data = [a_signal,v_signal]
         print('Received Array: ', received_array)
+        print('Egram Data: ', egram_data)
         error = 0
         while(error == 0):
             if(data_to_send['MODE'] != round(modeN)):
@@ -172,4 +173,48 @@ class SerialCommunication:
             messagebox.showinfo("Note!", "The parameters have been confirmed with the Pacemaker")
             # egram_display(pacemaker,mode,modeNum)
         ser.close()  # Close the serial connection after sending
+
+        return egram_data
+
+    # def receive_egram_data(self):
+    #     packet = []
+
+    #     s0 = b'\x00'
+    #     s1 = b'\x01'
+        
+    #     packet.append(s0)
+    #     packet.append(s1)
+
+    #     ser = serial.Serial(self.main.port ,115200)
+    #     ser.write(b''.join(packet))
+    #     print("hello")
+    #     print(ser.read())
+    #     ser.close()
+
+
+    #     modeN = (struct.unpack('B',ser.read(1)))[0]
+    #     lrl = (struct.unpack('B',ser.read(1)))[0]
+    #     url = (struct.unpack('B',ser.read(1)))[0]
+    #     msr= (struct.unpack('B',ser.read(1)))[0]
+    #     a_amplitude = (struct.unpack('f',ser.read(4)))[0]
+    #     v_amplitude = (struct.unpack('f',ser.read(4)))[0]
+    #     a_width = (struct.unpack('B',ser.read(1)))[0]
+    #     v_width = (struct.unpack('B',ser.read(1)))[0]
+    #     a_sensitivity = (struct.unpack('f',ser.read(4)))[0]
+    #     v_sensitivity = (struct.unpack('f',ser.read(4)))[0]
+    #     vrp = (struct.unpack('H',ser.read(2)))[0]
+    #     arp = (struct.unpack('H',ser.read(2)))[0]
+    #     activity_thresh = (struct.unpack('B',ser.read(1)))[0]
+    #     react_time = (struct.unpack('B',ser.read(1)))[0]
+    #     r_factor = (struct.unpack('B',ser.read(1)))[0]
+    #     rec_time = (struct.unpack('B',ser.read(1)))[0]
+    #     a_voltage = (struct.unpack('d',ser.read(8)))[0]
+    #     v_voltage = (struct.unpack('d',ser.read(8)))[0]
+
+        
+
+    #     egram_data = [a_voltage, v_voltage]
+    #     print(egram_data)
+    #     return egram_data
+
 

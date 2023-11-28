@@ -101,7 +101,7 @@ class SerialCommunication:
         packet.append(s17)
         
         #Establish Serial Connection
-        ser = serial.Serial("COM5",115200)
+        ser = serial.Serial(self.main.port,115200)
 
         ser.write(b''.join(packet))
         print('Data has been written: ', packet)

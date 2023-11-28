@@ -53,6 +53,9 @@ class Egram:
         self.ax_atrial.set_visible(False)
         self.ax_ventricular.set_visible(False)
 
+        self.timer_interval = 1000  # Time interval in milliseconds
+        self.egram_data = {'Atrial': [], 'Ventricular': []}  # Placeholder for Egram data
+
     def render(self, mode):
         self.current_mode = mode
         chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()
@@ -120,6 +123,39 @@ class Egram:
 
 
         # Update legends and redraw the canvas
+        self.canvas.draw()
+
+        # Start a loop to continuously update the Egram data
+        self.update_egram_data(mode)
+    
+    def update_egram_data(self, mode):
+        # Fetch Egram data from the pacemaker using send_parameters method
+        new_egram_data = self.serial_comm.send_parameters({'MODE': 1, 'LRL': 60, 'URL': 120, 'MSR': 120, 'A_AMPLITUDE': 2.0,
+                                                            'V_AMPLITUDE': 5.0, 'A_WIDTH': 1, 'V_WIDTH': 1,
+                                                            'A_SENSITIVITY': 0.0, 'V_SENSITIVITY': 0.0, 'VRP': 320,
+                                                            'ARP': 250, 'HRL': 0, 'RATE_SMOOTH': 0,
+                                                            'ACTIVITY_THRESH': 'med', 'REACT_TIME': 30,
+                                                            'RESPONSE_FAC': 8, 'RECOVERY_TIME': 5}, b'\x00', b'\x01')
+
+        if mode == "Atrial":
+            self.egram_data['Atrial'].append(new_egram_data)
+            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'])
+        elif mode == "Ventricular":
+            self.egram_data['Ventricular'].append(new_egram_data)
+            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'])
+        elif mode == "Atrial + Ventricular":
+            # Assuming new_egram_data contains both atrial and ventricular data
+            self.egram_data['Atrial'].append(new_egram_data[0])
+            self.egram_data['Ventricular'].append(new_egram_data[1])
+            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'])
+            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'])
+
+        # Schedule the next update after the specified time interval
+        self.root.after(self.timer_interval, self.update_egram_data, mode)
+
+    def update_subplot(self, axis, new_data):
+        axis.clear()
+        axis.plot(new_data, 'b-')  # 'b-' represents a blue line; adjust as needed
         self.canvas.draw()
         # self.ax_atrial.legend()
         # self.ax_ventricular.legend()

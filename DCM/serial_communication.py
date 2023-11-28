@@ -24,23 +24,22 @@ class SerialCommunication:
         if not data:
             data = {}
 
-        # Check if 'COM4' port is in the list of available ports
+        # Check for the specific hardware identifier across all available ports
         for prt, desc, hwid in sorted(ports):
-            if "USB VID:PID=1366:1015 SER=000621000000" == hwid:
+            if hwid.startswith("USB VID:PID=1366:1015"):
                 self.main.port = prt
                 connected = True
                 if username in data:
                     if hwid in data[username]:
-                        data[username]=hwid
+                        data[username] = hwid
                         with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                             json.dump(data, file)
                             break
                     else:
-                        data[username]=hwid
+                        data[username] = hwid
                         messagebox.showwarning("Warning!", "A new pacemaker board has been connected")
-                        
                 else:
-                    data[username]=hwid
+                    data[username] = hwid
                     messagebox.showwarning("Warning!", "A new pacemaker board has been connected")
                     with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                         json.dump(data, file)
@@ -168,7 +167,8 @@ class SerialCommunication:
                 error = 2
     
         if(error == 1):
-            messagebox.showinfo("Note!", "There was a problem communicating with the Pacemaker")
+            if(s1 != b'\x01'):
+                messagebox.showinfo("Note!", "There was a problem communicating with the Pacemaker")
         else:
             messagebox.showinfo("Note!", "The parameters have been confirmed with the Pacemaker")
             # egram_display(pacemaker,mode,modeNum)

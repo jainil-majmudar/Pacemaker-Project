@@ -607,7 +607,7 @@ class ModeSel:
             }
             print(data_to_send)
            
-            self.serial_comm.send_parameters(data_to_send)
+            self.serial_comm.send_parameters(data_to_send,b'\x00',b'\x00')
             
 
             

@@ -136,12 +136,13 @@ class Egram:
                                                             'ARP': 250, 'HRL': 0, 'RATE_SMOOTH': 0,
                                                             'ACTIVITY_THRESH': 'med', 'REACT_TIME': 30,
                                                             'RESPONSE_FAC': 8, 'RECOVERY_TIME': 5}, b'\x00', b'\x01')
-
+        print('Received Egram Data: ',new_egram_data)
+        
         if mode == "Atrial":
-            self.egram_data['Atrial'].append(new_egram_data)
+            self.egram_data['Atrial'].append(new_egram_data[0])
             self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
         elif mode == "Ventricular":
-            self.egram_data['Ventricular'].append(new_egram_data)
+            self.egram_data['Ventricular'].append(new_egram_data[1])
             self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
         elif mode == "Atrial + Ventricular":
             # Assuming new_egram_data contains both atrial and ventricular data

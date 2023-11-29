@@ -2,11 +2,13 @@ import serial.tools.list_ports
 import struct
 import json
 import tkinter.messagebox as messagebox
+import re
 
 
 class SerialCommunication:
     def __init__(self, main_app):
         self.main = main_app
+        self.port_list = ["",""]
 
     def check_connection(self):
         username = self.main.username
@@ -23,30 +25,48 @@ class SerialCommunication:
             data = {}
         if not data:
             data = {}
+    
 
         # Check for the specific hardware identifier across all available ports
         for prt, desc, hwid in sorted(ports):
             if hwid.startswith("USB VID:PID=1366:1015"):
-                self.main.port = prt
+                self.port_list[0] = hwid
+                self.main.pacemaker_port = prt
                 connected = True
                 if username in data:
                     if hwid in data[username]:
-                        data[username] = hwid
+                        continue
+                    else:
+                        data[username] = self.port_list
+                        messagebox.showwarning("Warning!", "A new pacemaker board has been connected") 
                         with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                             json.dump(data, file)
-                            break
-                    else:
-                        data[username] = hwid
-                        messagebox.showwarning("Warning!", "A new pacemaker board has been connected")
                 else:
-                    data[username] = hwid
-                    messagebox.showwarning("Warning!", "A new pacemaker board has been connected")
+                    data[username] = self.port_list
+                    messagebox.showwarning("Warning!", "A new pacemaker board has been connected")  
                     with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                         json.dump(data, file)
+
+            elif hwid.startswith("USB VID:PID=0483:374B"):
+                self.main.heart_port = prt
+                self.port_list[1] = hwid
+                if username in data:
+                    if hwid in data[username]:
+                        continue
+                    else:
+                        data[username] = self.port_list
+                        messagebox.showwarning("Warning!", "A new heart board has been connected")    
+                        with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
+                            json.dump(data, file)
                         break
+                else:
+                    data[username] = self.port_list
+                    messagebox.showwarning("Warning!", "A new heart board has been connected")   
+                    with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
+                        json.dump(data, file)
+                    break
 
         return connected
-
 
         # Define the function to establish a serial connection and send parameters
     def send_parameters(self, data_to_send,s0,s1):
@@ -101,7 +121,7 @@ class SerialCommunication:
         packet.append(s17)
         
         #Establish Serial Connection
-        ser = serial.Serial(self.main.port,115200)
+        ser = serial.Serial(self.main.pacemaker_port,115200)
 
         ser.write(b''.join(packet))
         print('Data has been written: ', packet)
@@ -185,7 +205,7 @@ class SerialCommunication:
     #     packet.append(s0)
     #     packet.append(s1)
 
-    #     ser = serial.Serial(self.main.port ,115200)
+    #     ser = serial.Serial(self.main.pacemaker_port ,115200)
     #     ser.write(b''.join(packet))
     #     print("hello")
     #     print(ser.read())

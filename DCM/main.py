@@ -17,7 +17,8 @@ class SimpleLoginApp(tk.Tk):
         self.minsize(500, 250)
         self.resizable(False,False)
         self.username = ""
-        self.port = ""
+        self.pacemaker_port = ""
+        self.heart_port = ""
 
         # Create Frames
         bgColor = '#AED2FF'
@@ -95,8 +96,6 @@ class SimpleLoginApp(tk.Tk):
         self.username_entry.delete(0,'end')
         user_manager.login_user(self.username,password)
         self.pacemaker_interface.update_prev_pacemaker_label()
-        
-    
     
     def register(self):
         username = self.register_username_entry.get()

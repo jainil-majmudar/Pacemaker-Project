@@ -2,6 +2,8 @@ import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from serial_communication import SerialCommunication
+from datetime import datetime
+import time
 
 
 class Egram:
@@ -53,13 +55,26 @@ class Egram:
         self.ax_atrial.set_visible(False)
         self.ax_ventricular.set_visible(False)
 
-        self.timer_interval = 100  # Time interval in milliseconds
+        self.timer_interval = 75  # Time interval in milliseconds
         self.egram_data = {'Atrial': [], 'Ventricular': []}  # Placeholder for Egram data
 
+        self.stop_button = tk.Button(root, text="Start/Stop", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.toggle_egram)
+        self.stop_button.place(x=360, y=60)
+
+        self.stop_graph = False
+
     def render(self, mode):
+        if (self.current_mode == "Atrial" and mode == "Ventricular") or \
+           (self.current_mode == "Atrial" and mode == "Atrial + Ventricular") or \
+           (self.current_mode == "Ventricular" and mode != "Atrial + Ventricular") or \
+           (self.current_mode == "Ventricular" and mode != "Atrial") or \
+           (self.current_mode == "Atrial + Ventricular" and mode != "Atrial") or \
+           (self.current_mode == "Atrial + Ventricular" and mode != "Ventricular"):
+            # Stop the graph in the previous mode if it is running
+            self.stop_egram()
+
+        # Update the current mode
         self.current_mode = mode
-        chosen_pacemaker = self.main.pacemaker_interface.pacemaker_entry.get()
-        self.pacemaker = chosen_pacemaker
 
         # Clear existing lines if any
         for line in self.lines_atrial:
@@ -68,6 +83,9 @@ class Egram:
             line.remove()
         self.lines_atrial = []
         self.lines_ventricular = []
+
+        # Capture the start time
+        start_time = datetime.now()
 
         # Show the selected plot
         if mode == "Atrial":
@@ -121,14 +139,13 @@ class Egram:
             bbox_ventricular.x1 = 0.9
             self.ax_ventricular.set_position(bbox_ventricular)
 
-
         # Update legends and redraw the canvas
         self.canvas.draw()
 
         # Start a loop to continuously update the Egram data
-        self.update_egram_data(mode)
+        self.update_egram_data(mode, start_time)
     
-    def update_egram_data(self, mode):
+    def update_egram_data(self, mode, start_time):
         # Fetch Egram data from the pacemaker using send_parameters method
         new_egram_data = self.serial_comm.send_parameters({'MODE': 1, 'LRL': 60, 'URL': 120, 'MSR': 120, 'A_AMPLITUDE': 2.0,
                                                             'V_AMPLITUDE': 5.0, 'A_WIDTH': 1, 'V_WIDTH': 1,
@@ -136,28 +153,60 @@ class Egram:
                                                             'ARP': 250, 'HRL': 0, 'RATE_SMOOTH': 0,
                                                             'ACTIVITY_THRESH': 'med', 'REACT_TIME': 30,
                                                             'RESPONSE_FAC': 8, 'RECOVERY_TIME': 5}, b'\x00', b'\x01')
-        print('Received Egram Data: ',new_egram_data)
-        
-        if mode == "Atrial":
-            self.egram_data['Atrial'].append(new_egram_data[0])
-            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
-        elif mode == "Ventricular":
-            self.egram_data['Ventricular'].append(new_egram_data[1])
-            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
-        elif mode == "Atrial + Ventricular":
-            # Assuming new_egram_data contains both atrial and ventricular data
-            self.egram_data['Atrial'].append(new_egram_data[0])
-            self.egram_data['Ventricular'].append(new_egram_data[1])
-            self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
-            self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
 
-        # Schedule the next update after the specified time interval
-        self.root.after(self.timer_interval, self.update_egram_data, mode)
+        if not self.stop_graph:
+            # Calculate the elapsed time
+            elapsed_time = datetime.now() - start_time
+
+            if mode == "Atrial":
+                self.egram_data['Atrial'].append((elapsed_time, new_egram_data[0]))
+                self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
+            elif mode == "Ventricular":
+                self.egram_data['Ventricular'].append((elapsed_time, new_egram_data[1]))
+                self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
+            elif mode == "Atrial + Ventricular":
+                # Assuming new_egram_data contains both atrial and ventricular data
+                self.egram_data['Atrial'].append((elapsed_time, new_egram_data[0]))
+                self.egram_data['Ventricular'].append((elapsed_time, new_egram_data[1]))
+                self.update_subplot(self.ax_atrial, self.egram_data['Atrial'], 'Atrial')
+                self.update_subplot(self.ax_ventricular, self.egram_data['Ventricular'], 'Ventricular')
+
+            # Schedule the next update after the specified time interval
+            self.root.after(self.timer_interval, self.update_egram_data, mode, start_time)
 
     def update_subplot(self, axis, new_data, plot_title):
+        # Clear the axis
         axis.clear()
-        axis.plot(new_data, 'b-')  # 'b-' represents a blue line; adjust as needed
-        axis.set_title(plot_title)  # Set title for the subplot
+
+        # Extract timestamps and data
+        timestamps, voltage_data = zip(*new_data)
+
+        # Calculate the elapsed time in seconds for each data point
+        elapsed_times = [(timestamp - timestamps[0]).total_seconds() for timestamp in timestamps]
+
+        # Plot the data
+        axis.plot(elapsed_times, voltage_data, 'b-')
+        axis.set_title(plot_title)
+
+        # Set x-axis limits with a small buffer to avoid identical values
+        buffer = 0.001  # Adjust the buffer as needed
+        axis.set_xlim(elapsed_times[0] - buffer, elapsed_times[-1] + buffer)
+
+        # Redraw the canvas
         self.canvas.draw()
-        # self.ax_atrial.legend()
-        # self.ax_ventricular.legend()
+
+
+    def toggle_egram(self):
+        # Toggle the stop_graph flag
+        self.stop_graph = not self.stop_graph
+
+        if not self.stop_graph:
+            # Record the start time when resuming
+            self.start_time = datetime.now()
+            self.egram_data = {'Atrial': [], 'Ventricular': []}
+            self.update_egram_data(self.current_mode, start_time=self.start_time)
+
+
+    def stop_egram(self):
+        # Set the stop_graph flag to True
+        self.stop_graph = True

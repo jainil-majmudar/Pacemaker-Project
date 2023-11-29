@@ -187,9 +187,10 @@ class Egram:
         axis.plot(elapsed_times, voltage_data, 'b-')
         axis.set_title(plot_title)
 
-        # Set x-axis limits with a small buffer to avoid identical values
-        buffer = 0.001  # Adjust the buffer as needed
-        axis.set_xlim(elapsed_times[0] - buffer, elapsed_times[-1] + buffer)
+        # Set x-axis limits dynamically based on elapsed time
+        max_elapsed_time = max(elapsed_times)
+        min_elapsed_time = max(0, max_elapsed_time - 15)  # Keep a time frame of 50 seconds
+        axis.set_xlim(min_elapsed_time, max_elapsed_time)
 
         # Redraw the canvas
         self.canvas.draw()

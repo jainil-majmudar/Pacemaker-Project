@@ -3,7 +3,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from serial_communication import SerialCommunication
 from datetime import datetime
-import time
 
 
 class Egram:
@@ -30,10 +29,10 @@ class Egram:
         self.canvas_widget = self.canvas.get_tk_widget()
         self.canvas_widget.config(bg='#F5E8B7')
         self.canvas_widget.place(relx=0.5, rely=0.55, anchor=tk.CENTER)
-        self.log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=lambda: self.main.route(self.main.login_frame))
+        self.log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.log_out_command)
         self.log_out.place(x=1000, y=30)
 
-        self.back_button = tk.Button(root, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=lambda: self.main.route(self.main.mode_sel))
+        self.back_button = tk.Button(root, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=self.back_button_command)
         self.back_button.place(x=900, y=30)
 
         self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
@@ -210,3 +209,13 @@ class Egram:
     def stop_egram(self):
         # Set the stop_graph flag to True
         self.stop_graph = True
+
+    def log_out_command(self):
+        # Stop the graphs when Log Out button is pressed
+        self.stop_egram()
+        self.main.route(self.main.login_frame)
+
+    def back_button_command(self):
+        # Stop the graphs when Back button is pressed
+        self.stop_egram()
+        self.main.route(self.main.mode_sel)

@@ -124,7 +124,7 @@ class SerialCommunication:
         ser = serial.Serial(self.main.pacemaker_port,115200)
 
         ser.write(b''.join(packet))
-        print('Data has been written: ', packet)
+        #print('Data has been written: ', packet)
         #Receiving Params
         modeN = (struct.unpack('B',ser.read(1)))[0]
         lrl = (struct.unpack('B',ser.read(1)))[0]
@@ -147,8 +147,8 @@ class SerialCommunication:
         
         received_array = [modeN, lrl, url, msr, a_amplitude, v_amplitude, a_width, v_width, a_sensitivity, v_sensitivity, vrp, arp, activity_thresh, react_time, r_factor, rec_time]
         egram_data = [a_signal,v_signal]
-        print('Received Array: ', received_array)
-        print('Egram Data: ', egram_data)
+        # print('Received Array: ', received_array)
+        # print('Egram Data: ', egram_data)
         error = 0
         while(error == 0):
             if(data_to_send['MODE'] != round(modeN)):

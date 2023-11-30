@@ -2,12 +2,14 @@
 import json
 import tkinter as tk
 import tkinter.messagebox as messagebox
+from serial_communication import SerialCommunication  # Import your serial_communication module
 
 class UserManager:
     def __init__(self, user_data_file, main_app):
         self.user_data_file = user_data_file
         self.users = self.load_user_data()
         self.main = main_app
+        self.serial_comm = SerialCommunication(self.main)
 
     def load_user_data(self):
         try:
@@ -41,6 +43,8 @@ class UserManager:
     def login_user(self, username, password):
         for user_data in self.users:
             if username == user_data["username"] and password == user_data["password"]:
+                self.main.login_bool = False
+                self.main.port_list = ["", ""]
                 self.main.route(self.main.pacemaker_sel)
                 self.main.pacemaker_interface.check_and_update_connection()
                 return messagebox.showinfo("Login", "Login successful!")

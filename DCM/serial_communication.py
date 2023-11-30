@@ -7,7 +7,7 @@ import tkinter.messagebox as messagebox
 class SerialCommunication:
     def __init__(self, main_app):
         self.main = main_app
-        self.port_list = ["",""]
+        
 
     def check_connection(self):
         username = self.main.username
@@ -29,37 +29,37 @@ class SerialCommunication:
         # Check for the specific hardware identifier across all available ports
         for prt, desc, hwid in sorted(ports):
             if hwid.startswith("USB VID:PID=1366:1015"):
-                self.port_list[0] = hwid
+                self.main.port_list[0] = hwid
                 self.main.pacemaker_port = prt
                 connected = True
                 if username in data:
                     if hwid in data[username]:
                         continue
                     else:
-                        data[username] = self.port_list
+                        data[username] = self.main.port_list
                         messagebox.showwarning("Warning!", "A new pacemaker board has been connected") 
                         with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                             json.dump(data, file)
                 else:
-                    data[username] = self.port_list
+                    data[username] = self.main.port_list
                     messagebox.showwarning("Warning!", "A new pacemaker board has been connected")  
                     with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                         json.dump(data, file)
 
             elif hwid.startswith("USB VID:PID=0483:374B"):
                 self.main.heart_port = prt
-                self.port_list[1] = hwid
+                self.main.port_list[1] = hwid
                 if username in data:
                     if hwid in data[username]:
                         continue
                     else:
-                        data[username] = self.port_list
+                        data[username] = self.main.port_list
                         messagebox.showwarning("Warning!", "A new heart board has been connected")    
                         with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                             json.dump(data, file)
                         break
                 else:
-                    data[username] = self.port_list
+                    data[username] = self.main.port_list
                     messagebox.showwarning("Warning!", "A new heart board has been connected")   
                     with open("DCM/DataStorage/pacemaker_board_list.json", "w") as file:
                         json.dump(data, file)

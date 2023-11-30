@@ -19,6 +19,8 @@ class SimpleLoginApp(tk.Tk):
         self.username = ""
         self.pacemaker_port = ""
         self.heart_port = ""
+        self.login_bool = True
+        self.port_list = ["",""]
 
         # Create Frames
         bgColor = '#AED2FF'
@@ -94,8 +96,8 @@ class SimpleLoginApp(tk.Tk):
         password = self.password_entry.get()
         self.password_entry.delete(0,'end')
         self.username_entry.delete(0,'end')
+        pacemaker_interface.update_prev_pacemaker_label()
         user_manager.login_user(self.username,password)
-        self.pacemaker_interface.update_prev_pacemaker_label()
     
     def register(self):
         username = self.register_username_entry.get()
@@ -109,6 +111,8 @@ class SimpleLoginApp(tk.Tk):
 
 
     def route(self, target_frame):
+        if target_frame == self.login_frame:
+            self.login_bool = True
         # Hide the current frame and show the target frame
         self.login_frame.pack_forget()
         self.register_frame.pack_forget()

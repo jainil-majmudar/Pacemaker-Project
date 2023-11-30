@@ -65,15 +65,17 @@ class PacemakerInterface:
     
     def update_connection_label(self):
         connected = self.serial_comm.check_connection()
+        
         if connected:
             self.connection_label.config(text="Communication Established: Yes", fg='green')
         else:
             self.connection_label.config(text="Communication Established: No", fg='red')
 
     def check_and_update_connection(self):
-        self.update_connection_label()  # Update the connection label
-        # Schedule to check and update again after 2 seconds
-        self.root.after(100, self.check_and_update_connection)
+        if self.main.login_bool == False:
+            self.update_connection_label()  # Update the connection label
+            # Schedule to check and update again after 2 seconds
+            self.root.after(100, self.check_and_update_connection)
     
 
     def submit(self, entry):

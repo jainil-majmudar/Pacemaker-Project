@@ -54,7 +54,7 @@ class Egram:
         self.ax_atrial.set_visible(False)
         self.ax_ventricular.set_visible(False)
 
-        self.timer_interval = 75  # Time interval in milliseconds
+        self.timer_interval = 100  # Time interval in milliseconds
         self.egram_data = {'Atrial': [], 'Ventricular': []}  # Placeholder for Egram data
 
         self.stop_button = tk.Button(root, text="Start/Stop", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.toggle_egram)
@@ -91,12 +91,6 @@ class Egram:
             # Create blank atrial graph
             self.ax_atrial.plot([], [])
             self.ax_atrial.set_visible(True)
-            data = self.serial_comm.send_parameters({'MODE': 1, 'LRL': 60, 'URL': 120, 'MSR': 120, 'A_AMPLITUDE': 2.0,
-                                                            'V_AMPLITUDE': 5.0, 'A_WIDTH': 1, 'V_WIDTH': 1,
-                                                            'A_SENSITIVITY': 0.0, 'V_SENSITIVITY': 0.0, 'VRP': 320,
-                                                            'ARP': 250, 'HRL': 0, 'RATE_SMOOTH': 0,
-                                                            'ACTIVITY_THRESH': 'med', 'REACT_TIME': 30,
-                                                            'RESPONSE_FAC': 8, 'RECOVERY_TIME': 5},b'\x00',b'\x01')
             
             # Adjust the position of ax_atrial to move it towards the middle
             bbox_atrial = self.ax_atrial.get_position()
@@ -148,10 +142,9 @@ class Egram:
         # Fetch Egram data from the pacemaker using send_parameters method
         new_egram_data = self.serial_comm.send_parameters({'MODE': 1, 'LRL': 60, 'URL': 120, 'MSR': 120, 'A_AMPLITUDE': 2.0,
                                                             'V_AMPLITUDE': 5.0, 'A_WIDTH': 1, 'V_WIDTH': 1,
-                                                            'A_SENSITIVITY': 0.0, 'V_SENSITIVITY': 0.0, 'VRP': 320,
-                                                            'ARP': 250, 'HRL': 0, 'RATE_SMOOTH': 0,
-                                                            'ACTIVITY_THRESH': 'med', 'REACT_TIME': 30,
-                                                            'RESPONSE_FAC': 8, 'RECOVERY_TIME': 5}, b'\x00', b'\x01')
+                                                            'A_SENSITIVITY': 3.0, 'V_SENSITIVITY': 3.0, 'VRP': 320,
+                                                            'ARP': 250, 'ACTIVITY_THRESH': 'med', 'REACT_TIME': 30,
+                                                            'RESPONSE_FAC': 8, 'RECOVERY_TIME': 5}, b'\x00', b'\x02')
 
         if not self.stop_graph:
             # Calculate the elapsed time

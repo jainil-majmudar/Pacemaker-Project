@@ -80,10 +80,10 @@ class ModeSel:
             "Maximum Sensor Rate": 120,
             "Atrial Amplitude": 5.0,
             "Atrial Pulse Width": 1,
-            "Atrial Sensitivity": 0.0,
+            "Atrial Sensitivity": 3.0,
             "Ventricular Amplitude": 5.0,
             "Ventricular Pulse Width": 1,
-            "Ventricular Sensitivity": 0.0,
+            "Ventricular Sensitivity": 3.0,
             "ARP": 250,
             "VRP": 320,
             "Hysteresis":0,
@@ -566,21 +566,21 @@ class ModeSel:
             mode = self.current_mode
             print("Mode is: ",mode)
             if mode == 'AOO':
-                mapped_mode = 1
-            elif mode == 'VOO':
-                mapped_mode = 2
-            elif mode == 'AAI':
                 mapped_mode = 3
-            elif mode == 'VVI':
+            elif mode == 'VOO':
+                mapped_mode = 1
+            elif mode == 'AAI':
                 mapped_mode = 4
+            elif mode == 'VVI':
+                mapped_mode = 2
             elif mode == 'AOOR':
-                mapped_mode = 5
-            elif mode == 'VOOR':
-                mapped_mode = 6
-            elif mode == 'AAIR':
                 mapped_mode = 7
-            elif mode == 'VVIR':
+            elif mode == 'VOOR':
+                mapped_mode = 5
+            elif mode == 'AAIR':
                 mapped_mode = 8
+            elif mode == 'VVIR':
+                mapped_mode = 6
             else:
                 pass
             
@@ -607,7 +607,7 @@ class ModeSel:
             }
             print(data_to_send)
            
-            self.serial_comm.send_parameters(data_to_send,b'\x00',b'\x00')
+            self.serial_comm.send_parameters(data_to_send,b'\x00',b'\x01')
             
 
             

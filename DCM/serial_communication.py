@@ -2,7 +2,6 @@ import serial.tools.list_ports
 import struct
 import json
 import tkinter.messagebox as messagebox
-import re
 
 
 class SerialCommunication:
@@ -71,13 +70,13 @@ class SerialCommunication:
         # Define the function to establish a serial connection and send parameters
     def send_parameters(self, data_to_send,s0,s1):
         activity_thresh_values = {
-        'v-low': 1,
-        'low': 2,
-        'med-low': 3,
-        'med': 4,
-        'med-high': 5,
-        'high': 6,
-        'v-high': 7
+        'v-low': 0,
+        'low': 1,
+        'med-low': 2,
+        'med': 3,
+        'med-high': 4,
+        'high': 5,
+        'v-high': 6
         }
 
         activity_thresh_value = activity_thresh_values[data_to_send['ACTIVITY_THRESH']]
@@ -85,21 +84,21 @@ class SerialCommunication:
         packet = []
 
         s2 = struct.pack('B', data_to_send['MODE'])
-        s3 = struct.pack('B', data_to_send['LRL'])
-        s4 = struct.pack('B', data_to_send['URL'])
-        s5 = struct.pack('B', data_to_send['MSR'])
+        s3 = struct.pack('H', data_to_send['LRL'])
+        s4 = struct.pack('H', data_to_send['URL'])
+        s5 = struct.pack('H', data_to_send['MSR'])
         s6 = struct.pack('f', data_to_send['A_AMPLITUDE'])
         s7 = struct.pack('f', data_to_send['V_AMPLITUDE'])
-        s8 = struct.pack('B', data_to_send['A_WIDTH'])
-        s9 = struct.pack('B', data_to_send['V_WIDTH'])
+        s8 = struct.pack('H', data_to_send['A_WIDTH'])
+        s9 = struct.pack('H', data_to_send['V_WIDTH'])
         s10 = struct.pack('f', data_to_send['A_SENSITIVITY'])
         s11 = struct.pack('f', data_to_send['V_SENSITIVITY'])
         s12 = struct.pack('H', data_to_send['VRP'])
         s13 = struct.pack('H', data_to_send['ARP'])
         s14 = struct.pack('B', activity_thresh_value)
-        s15 = struct.pack('B', data_to_send['REACT_TIME'])
-        s16 = struct.pack('B', data_to_send['RESPONSE_FAC'])
-        s17 = struct.pack('B', data_to_send['RECOVERY_TIME'])
+        s15 = struct.pack('H', data_to_send['REACT_TIME'])
+        s16 = struct.pack('H', data_to_send['RESPONSE_FAC'])
+        s17 = struct.pack('H', data_to_send['RECOVERY_TIME'])
         
         packet.append(s0)
         packet.append(s1)
@@ -127,28 +126,27 @@ class SerialCommunication:
         #print('Data has been written: ', packet)
         #Receiving Params
         modeN = (struct.unpack('B',ser.read(1)))[0]
-        lrl = (struct.unpack('B',ser.read(1)))[0]
-        url = (struct.unpack('B',ser.read(1)))[0]
-        msr= (struct.unpack('B',ser.read(1)))[0]
+        lrl = (struct.unpack('H',ser.read(2)))[0]
+        url = (struct.unpack('H',ser.read(2)))[0]
+        msr= (struct.unpack('H',ser.read(2)))[0]
         a_amplitude = (struct.unpack('f',ser.read(4)))[0]
         v_amplitude = (struct.unpack('f',ser.read(4)))[0]
-        a_width = (struct.unpack('B',ser.read(1)))[0]
-        v_width = (struct.unpack('B',ser.read(1)))[0]
+        a_width = (struct.unpack('H',ser.read(2)))[0]
+        v_width = (struct.unpack('H',ser.read(2)))[0]
         a_sensitivity = (struct.unpack('f',ser.read(4)))[0]
         v_sensitivity = (struct.unpack('f',ser.read(4)))[0]
         vrp = (struct.unpack('H',ser.read(2)))[0]
         arp = (struct.unpack('H',ser.read(2)))[0]
         activity_thresh = (struct.unpack('B',ser.read(1)))[0]
-        react_time = (struct.unpack('B',ser.read(1)))[0]
-        r_factor = (struct.unpack('B',ser.read(1)))[0]
-        rec_time = (struct.unpack('B',ser.read(1)))[0]
+        react_time = (struct.unpack('H',ser.read(2)))[0]
+        r_factor = (struct.unpack('H',ser.read(2)))[0]
+        rec_time = (struct.unpack('H',ser.read(2)))[0]
         a_signal = (struct.unpack('d',ser.read(8)))[0]
         v_signal = (struct.unpack('d',ser.read(8)))[0]
-        
-        received_array = [modeN, lrl, url, msr, a_amplitude, v_amplitude, a_width, v_width, a_sensitivity, v_sensitivity, vrp, arp, activity_thresh, react_time, r_factor, rec_time]
+        receivedArray = [modeN,lrl,url,msr,a_amplitude,v_amplitude,a_width,v_width, a_sensitivity, v_sensitivity,vrp,arp,activity_thresh,react_time,r_factor,rec_time]
         egram_data = [a_signal,v_signal]
-        # print('Received Array: ', received_array)
-        # print('Egram Data: ', egram_data)
+        print('Received Array: ', receivedArray)
+        print('Egram Data: ', egram_data)
         error = 0
         while(error == 0):
             if(data_to_send['MODE'] != round(modeN)):
@@ -187,7 +185,7 @@ class SerialCommunication:
                 error = 2
     
         if(error == 1):
-            if(s1 != b'\x01'):
+            if(s1 != b'\x02'):
                 messagebox.showinfo("Note!", "There was a problem communicating with the Pacemaker")
         else:
             messagebox.showinfo("Note!", "The parameters have been confirmed with the Pacemaker")
@@ -196,45 +194,4 @@ class SerialCommunication:
 
         return egram_data
 
-    # def receive_egram_data(self):
-    #     packet = []
-
-    #     s0 = b'\x00'
-    #     s1 = b'\x01'
-        
-    #     packet.append(s0)
-    #     packet.append(s1)
-
-    #     ser = serial.Serial(self.main.pacemaker_port ,115200)
-    #     ser.write(b''.join(packet))
-    #     print("hello")
-    #     print(ser.read())
-    #     ser.close()
-
-
-    #     modeN = (struct.unpack('B',ser.read(1)))[0]
-    #     lrl = (struct.unpack('B',ser.read(1)))[0]
-    #     url = (struct.unpack('B',ser.read(1)))[0]
-    #     msr= (struct.unpack('B',ser.read(1)))[0]
-    #     a_amplitude = (struct.unpack('f',ser.read(4)))[0]
-    #     v_amplitude = (struct.unpack('f',ser.read(4)))[0]
-    #     a_width = (struct.unpack('B',ser.read(1)))[0]
-    #     v_width = (struct.unpack('B',ser.read(1)))[0]
-    #     a_sensitivity = (struct.unpack('f',ser.read(4)))[0]
-    #     v_sensitivity = (struct.unpack('f',ser.read(4)))[0]
-    #     vrp = (struct.unpack('H',ser.read(2)))[0]
-    #     arp = (struct.unpack('H',ser.read(2)))[0]
-    #     activity_thresh = (struct.unpack('B',ser.read(1)))[0]
-    #     react_time = (struct.unpack('B',ser.read(1)))[0]
-    #     r_factor = (struct.unpack('B',ser.read(1)))[0]
-    #     rec_time = (struct.unpack('B',ser.read(1)))[0]
-    #     a_voltage = (struct.unpack('d',ser.read(8)))[0]
-    #     v_voltage = (struct.unpack('d',ser.read(8)))[0]
-
-        
-
-    #     egram_data = [a_voltage, v_voltage]
-    #     print(egram_data)
-    #     return egram_data
-
-
+  

@@ -12,7 +12,7 @@ class Egram:
         self.serial_comm= SerialCommunication(self.main)
 
         # Create a Figure with two subplots
-        self.fig = Figure(figsize=(10, 4), dpi=100, facecolor='#F5E8B7')
+        self.fig = Figure(figsize=(10, 4), dpi=100, facecolor=self.main.bgcolor2)
         self.ax_atrial = self.fig.add_subplot(121)
         self.ax_ventricular = self.fig.add_subplot(122)
 
@@ -27,7 +27,7 @@ class Egram:
 
         # Place the canvas in the center of the root frame
         self.canvas_widget = self.canvas.get_tk_widget()
-        self.canvas_widget.config(bg='#F5E8B7')
+        self.canvas_widget.config(bg=self.main.bgcolor2)
         self.canvas_widget.place(relx=0.5, rely=0.55, anchor=tk.CENTER)
         self.log_out = tk.Button(root, width='10', border=2, text="Log Out", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.log_out_command)
         self.log_out.place(x=1000, y=30)
@@ -35,7 +35,7 @@ class Egram:
         self.back_button = tk.Button(root, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=self.back_button_command)
         self.back_button.place(x=900, y=30)
 
-        self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
+        self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2, cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
         self.mode_var = tk.StringVar()
         self.current_mode = ""
@@ -54,7 +54,7 @@ class Egram:
         self.ax_atrial.set_visible(False)
         self.ax_ventricular.set_visible(False)
 
-        self.timer_interval = 100  # Time interval in milliseconds
+        self.timer_interval = 5  # Time interval in milliseconds
         self.egram_data = {'Atrial': [], 'Ventricular': []}  # Placeholder for Egram data
 
         self.stop_button = tk.Button(root, text="Start/Stop", font=("Inter", 10, 'bold'), fg='white', bg='red', cursor='hand2', command=self.toggle_egram)

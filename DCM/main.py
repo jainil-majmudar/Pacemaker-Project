@@ -14,13 +14,13 @@ class SimpleLoginApp(tk.Tk):
 
         self.title("Pacemaker Interface")
         self.geometry('1100x600')
-        self.minsize(500, 250)
         self.resizable(False,False)
         self.username = ""
         self.pacemaker_port = ""
         self.heart_port = ""
         self.login_bool = True
         self.port_list = ["",""]
+        self.bgcolor2 = "#C5FFF8"
 
         # Create Frames
         bgColor = '#AED2FF'
@@ -28,16 +28,16 @@ class SimpleLoginApp(tk.Tk):
         self.login_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
         self.login_frame.pack(side='right', fill='both', expand=True)
        
-        self.pacemaker_sel = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+        self.pacemaker_sel = tk.Frame(self, width=1100, height=600, bg=self.bgcolor2)
         
-        self.mode_sel = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+        self.mode_sel = tk.Frame(self, width=1100, height=600, bg=self.bgcolor2)
 
         self.register_frame = tk.Frame(self, width=1100, height=600, bg=bgColor)
 
-        self.display_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
-        self.no_data_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+        self.display_frame = tk.Frame(self, width=1100, height=600, bg=self.bgcolor2)
+        self.no_data_frame = tk.Frame(self, width=1100, height=600, bg=self.bgcolor2)
 
-        self.egram_frame = tk.Frame(self, width=1100, height=600, bg='#F5E8B7')
+        self.egram_frame = tk.Frame(self, width=1100, height=600, bg=self.bgcolor2)
 
         
         

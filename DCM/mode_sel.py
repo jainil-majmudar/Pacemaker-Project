@@ -11,7 +11,7 @@ class ModeSel:
         self.error_labels = {}
         self.serial_comm= SerialCommunication(self.main)
 
-        self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7', cursor='hand2',text="Select Mode")
+        self.mode_label = tk.Label(root, font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2, cursor='hand2',text="Select Mode")
         self.mode_label.place(x=100, y=30)
         self.mode_var = tk.StringVar()
         self.current_mode = ""
@@ -116,7 +116,7 @@ class ModeSel:
             parameters = self.mode_parameters[mode]
             row = 130  # Adjust the starting Y position
             for param in parameters:
-                label = tk.Label(self.root, text=param, bg="#F5E8B7")
+                label = tk.Label(self.root, text=param, bg=self.main.bgcolor2)
                 label.place(x=100, y=row)
                 entry = tk.Entry(self.root)
                 entry.place(x=250, y=row)
@@ -129,7 +129,7 @@ class ModeSel:
                 entry.bind("<FocusOut>", lambda event, entry=entry, param=param: self.update_parameter_value(entry, param))
 
                 # Create an error label next to the entry (initially empty)
-                error_label = tk.Label(self.root, text="", fg="red", bg="#F5E8B7")
+                error_label = tk.Label(self.root, text="", fg="red", bg=self.main.bgcolor2)
                 error_label.place(x=450, y=row)
                 self.error_labels[param] = error_label  # Store the error label for later use
                 row += 30  # Adjust the vertical spacing

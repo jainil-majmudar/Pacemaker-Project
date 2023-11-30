@@ -11,17 +11,17 @@ class PacemakerInterface:
         self.serial_comm = SerialCommunication(self.main)
 
 
-        self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.connection_label = tk.Label(root, text="Communication Established: No", font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
         self.connection_label.place(x=100, y=500)
 
-        self.previous_pacemaker_label = tk.Label(self.root, text="",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.previous_pacemaker_label = tk.Label(self.root, text="",  font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
 
-        self.previous_pacemaker_label = tk.Label(self.root, text=f"Previous Pacemaker Connected: ",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.previous_pacemaker_label = tk.Label(self.root, text=f"Previous Pacemaker Connected: ",  font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
         self.previous_pacemaker_label.place(x=100, y=50)
 
 
         # Create and configure the pacemaker interface widgets
-        self.pacemaker_label = tk.Label(root, text="Insert name for Pacemaker", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.pacemaker_label = tk.Label(root, text="Insert name for Pacemaker", font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
         self.pacemaker_label.place(x=100, y=100)
         self.pacemaker_entry = tk.Entry(root, width=46)
         self.pacemaker_entry.place(x=325, y=100)
@@ -60,7 +60,7 @@ class PacemakerInterface:
 
     def update_prev_pacemaker_label(self):
         self.previous_pacemaker_label.destroy()
-        self.previous_pacemaker_label = tk.Label(self.root, text=f"Previous Pacemaker Connected: {self.load_previous_pacemaker()}",  font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.previous_pacemaker_label = tk.Label(self.root, text=f"Previous Pacemaker Connected: {self.load_previous_pacemaker()}",  font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
         self.previous_pacemaker_label.place(x=100, y=50)
     
     def update_connection_label(self):

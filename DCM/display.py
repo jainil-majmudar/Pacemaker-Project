@@ -11,17 +11,17 @@ class Display(tk.Tk):
         self.pacemaker_list = []
         self.selected_pacemaker = tk.StringVar(root)
 
-        self.label4 = tk.Label(root2, text="No Existing Data Found for this user", font=("Inter", 20, 'bold'), fg='red', bg='#F5E8B7')
+        self.label4 = tk.Label(root2, text="No Existing Data Found for this user", font=("Inter", 20, 'bold'), fg='red', bg=self.main.bgcolor2)
         self.label4.place(x=300, y=250)
         self.current_display = []
 
         
         # Create a label to display parameters
-        self.label1 = tk.Label(root, text="Please Choose a Pacemaker in order to view past data", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.label1 = tk.Label(root, text="Please Choose a Pacemaker in order to view past data", font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
         self.label1.place(x=100, y=30)
-        self.label2 = tk.Label(root, text="Your data will appear below :", font=("Inter", 10, 'bold'), fg='black', bg='#F5E8B7')
+        self.label2 = tk.Label(root, text="Your data will appear below :", font=("Inter", 10, 'bold'), fg='black', bg=self.main.bgcolor2)
         self.label2.place(x=100, y=150)
-        self.label3 = tk.Label(root, text="", font=("Inter", 10), fg='black', bg='#F5E8B7')
+        self.label3 = tk.Label(root, text="", font=("Inter", 10), fg='black', bg=self.main.bgcolor2)
         self.label3.place(x=100, y=200)
         self.label3.config(wraplength=1000)
         # Create a button to display parameters
@@ -37,9 +37,9 @@ class Display(tk.Tk):
         back_button = tk.Button(root2, text="Back", width='10', border=2, font=("Inter", 10, 'bold'), fg='white', bg='black', cursor='hand2', command=self.back_button)
         back_button.place(x=900, y=30)
 
-        self.canvas = tk.Canvas(root, bg='#F5E8B7', width=900, height=400, scrollregion=(0, 0, 1000, 400))
+        self.canvas = tk.Canvas(root, bg=self.main.bgcolor2, width=900, height=400, scrollregion=(0, 0, 1000, 400))
         self.canvas.place(x=100, y=200)
-        self.scroll_frame = tk.Frame(self.canvas, bg='#F5E8B7')
+        self.scroll_frame = tk.Frame(self.canvas, bg=self.main.bgcolor2)
         self.scroll_frame.place(relx=0, rely=0, anchor='nw')
         self.scrollbar = ttk.Scrollbar(root, orient='horizontal', command=self.canvas.xview)
         self.scrollbar.place(x=100, y=580, width=900)
@@ -128,15 +128,15 @@ class Display(tk.Tk):
             display.destroy()
         self.current_display = []
         for mode, params in parameters.items():
-            label_mode = tk.Label(self.scroll_frame, justify="left", text=mode, bg="#F5E8B7")
+            label_mode = tk.Label(self.scroll_frame, justify="left", text=mode, bg=self.main.bgcolor2)
             label_mode.grid(row=0, sticky='W', column=column, padx=10)
 
             row = 1 
             for param, value in params.items():
-                label_param = tk.Label(self.scroll_frame, justify="left", text=param, bg="#F5E8B7")
+                label_param = tk.Label(self.scroll_frame, justify="left", text=param, bg=self.main.bgcolor2)
                 label_param.grid(row=row, sticky='W', column=column, padx=10)
 
-                label_value = tk.Label(self.scroll_frame, text=value, justify="left", bg="#F5E8B7")
+                label_value = tk.Label(self.scroll_frame, text=value, justify="left", bg=self.main.bgcolor2)
                 label_value.grid(row=row, sticky='W', column=column + 1, padx=10)
 
                 row += 1

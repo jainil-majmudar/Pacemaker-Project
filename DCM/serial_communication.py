@@ -120,7 +120,10 @@ class SerialCommunication:
         packet.append(s17)
         
         #Establish Serial Connection
-        ser = serial.Serial(self.main.pacemaker_port,115200)
+        try:
+            ser = serial.Serial(self.main.pacemaker_port,115200)
+        except:
+            messagebox.showerror("Error","Please check your Pacemaker connection before starting Egram")
 
         ser.write(b''.join(packet))
         #print('Data has been written: ', packet)
